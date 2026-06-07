@@ -2971,5 +2971,105 @@
     "x": 800,
     "y": 260,
     "wires": []
+  },
+  {
+    "id": "g-transacto-kafka-producer",
+    "type": "group",
+    "z": "c203cc42e86554dd",
+    "name": "Kafka Producer",
+    "style": {
+      "label": true
+    },
+    "nodes": [
+      "t-inj-send-txn",
+      "t-func-gen-txn",
+      "t-kafka-producer",
+      "t-debug-sent-txn"
+    ],
+    "x": 254,
+    "y": 599,
+    "w": 352,
+    "h": 142
+  },
+  {
+    "id": "t-inj-send-txn",
+    "type": "inject",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-kafka-producer",
+    "name": "Send Transaction",
+    "props": [
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "send-txn",
+    "x": 310,
+    "y": 640,
+    "wires": [
+      [
+        "t-func-gen-txn"
+      ]
+    ]
+  },
+  {
+    "id": "t-func-gen-txn",
+    "type": "function",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-kafka-producer",
+    "name": "Generate random txn",
+    "func": "const accounts = ['ACC-1001', 'ACC-1002', 'ACC-2001', 'ACC-2002', 'ACC-3001'];\nconst currencies = ['USD', 'EUR', 'GBP'];\nconst descriptions = ['Payment for services', 'Invoice INV-2024', 'Transfer to savings', 'Refund order #1234', 'Salary payment'];\n\nconst srcIdx = Math.floor(Math.random() * accounts.length);\nlet dstIdx = Math.floor(Math.random() * (accounts.length - 1));\nif (dstIdx >= srcIdx) dstIdx++;\n\nmsg.payload = {\n  eventId: 'evt-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8),\n  eventType: 'TRANSACTION_POSTED',\n  timestamp: new Date().toISOString(),\n  payload: {\n    transactionId: 'txn-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),\n    sourceAccountId: accounts[srcIdx],\n    destinationAccountId: accounts[dstIdx],\n    amount: Math.round((Math.random() * 5000 + 10) * 100) / 100,\n    currency: currencies[Math.floor(Math.random() * currencies.length)],\n    description: descriptions[Math.floor(Math.random() * descriptions.length)]\n  }\n};\n\nreturn msg;",
+    "outputs": 1,
+    "x": 470,
+    "y": 640,
+    "wires": [
+      [
+        "t-kafka-producer"
+      ]
+    ]
+  },
+  {
+    "id": "t-kafka-producer",
+    "type": "oriolrius-kafka-producer",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-kafka-producer",
+    "name": "raw-transactions",
+    "broker": "040e76c320c91e83",
+    "topic": "raw-transactions",
+    "requireAcks": 1,
+    "ackTimeoutMs": 1000,
+    "attributes": 0,
+    "useSchemaValidation": false,
+    "validateOnly": false,
+    "useiot": false,
+    "x": 650,
+    "y": 640,
+    "wires": [
+      [
+        "t-debug-sent-txn"
+      ]
+    ]
+  },
+  {
+    "id": "t-debug-sent-txn",
+    "type": "debug",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-kafka-producer",
+    "name": "Sent",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 810,
+    "y": 640,
+    "wires": []
   }
 ]
