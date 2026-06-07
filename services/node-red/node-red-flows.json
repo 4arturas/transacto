@@ -224,8 +224,8 @@
       "0a74b085be53eddf",
       "5b41dd632fb475ef"
     ],
-    "x": null,
-    "y": null,
+    "x": 0,
+    "y": 0,
     "w": null,
     "h": null
   },
@@ -249,8 +249,8 @@
       "9765588992ab2673",
       "83350e24c0befd9e"
     ],
-    "x": null,
-    "y": null,
+    "x": 0,
+    "y": 0,
     "w": null,
     "h": null
   },
@@ -368,10 +368,10 @@
       "t-kafka-producer",
       "t-debug-sent-txn"
     ],
-    "x": 154,
-    "y": 719,
+    "x": 94,
+    "y": 19,
     "w": 572,
-    "h": 202
+    "h": 242
   },
   {
     "id": "g-transacto-txn-processor",
@@ -388,113 +388,10 @@
       "t-postgres-tp-counts",
       "t-debug-tp-counts"
     ],
-    "x": 834,
-    "y": 740,
-    "w": 592,
-    "h": 202
-  },
-  {
-    "id": "t-consumer-tp",
-    "type": "oriolrius-kafka-consumer",
-    "z": "c203cc42e86554dd",
-    "g": "g-transacto-txn-processor",
-    "d": true,
-    "name": "raw-transactions",
-    "broker": "040e76c320c91e83",
-    "topic": "raw-transactions",
-    "groupid": "node-red-transacto",
-    "fromOffset": "latest",
-    "encoding": "utf8",
-    "minbytes": "",
-    "maxbytes": "",
-    "useSchemaValidation": false,
-    "registryUrl": "",
-    "schemaSubject": "",
-    "useRegistryAuth": false,
-    "registryUsername": "",
-    "registryPassword": "",
-    "x": 930,
-    "y": 780,
-    "wires": [
-      [
-        "t-debug-tp-event"
-      ]
-    ]
-  },
-  {
-    "id": "t-debug-tp-event",
-    "type": "debug",
-    "z": "c203cc42e86554dd",
-    "g": "g-transacto-txn-processor",
-    "name": "Event received",
-    "active": true,
-    "tosidebar": true,
-    "console": false,
-    "tostatus": false,
-    "complete": "payload",
-    "targetType": "msg",
-    "statusVal": "",
-    "statusType": "auto",
-    "x": 1150,
-    "y": 780,
-    "wires": []
-  },
-  {
-    "id": "t-inj-tp-refresh",
-    "type": "inject",
-    "z": "c203cc42e86554dd",
-    "g": "g-transacto-txn-processor",
-    "name": "Refresh counts",
-    "props": [],
-    "repeat": "",
-    "crontab": "",
-    "once": true,
-    "onceDelay": 0.1,
-    "topic": "",
-    "x": 930,
-    "y": 860,
-    "wires": [
-      [
-        "t-postgres-tp-counts"
-      ]
-    ]
-  },
-  {
-    "id": "t-postgres-tp-counts",
-    "type": "postgresql",
-    "z": "c203cc42e86554dd",
-    "g": "g-transacto-txn-processor",
-    "name": "TXN table counts",
-    "query": "SELECT table_name, (xpath('/row/c/text()', query_to_xml(format('SELECT count(*) AS c FROM %I', table_name), false, true, '')))[1]::text::int AS count FROM information_schema.tables WHERE table_schema = 'public'",
-    "postgreSQLConfig": "719dd7cb729ea8d1",
-    "split": false,
-    "rowsPerMsg": 1,
-    "outputs": 1,
-    "x": 1150,
-    "y": 860,
-    "wires": [
-      [
-        "t-debug-tp-counts"
-      ]
-    ]
-  },
-  {
-    "id": "t-debug-tp-counts",
-    "type": "debug",
-    "z": "c203cc42e86554dd",
-    "g": "g-transacto-txn-processor",
-    "name": "Counts",
-    "active": true,
-    "tosidebar": true,
-    "console": false,
-    "tostatus": false,
-    "complete": "payload",
-    "targetType": "msg",
-    "statusVal": "",
-    "statusType": "auto",
-    "x": 1350,
-    "y": 860,
-    "wires": []
+    "x": 714,
+    "y": 19,
+    "w": 652,
+    "h": 162
   },
   {
     "id": "040e76c320c91e83",
@@ -545,6 +442,108 @@
       "@oriolrius/node-red-contrib-kafka": "6.1.1",
       "node-red-contrib-postgresql": "0.15.4"
     }
+  },
+  {
+    "id": "t-consumer-tp",
+    "type": "oriolrius-kafka-consumer",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-txn-processor",
+    "name": "raw-transactions",
+    "broker": "040e76c320c91e83",
+    "topic": "raw-transactions",
+    "groupid": "node-red-transacto",
+    "fromOffset": "latest",
+    "encoding": "utf8",
+    "minbytes": "",
+    "maxbytes": "",
+    "useSchemaValidation": false,
+    "registryUrl": "",
+    "schemaSubject": "",
+    "useRegistryAuth": false,
+    "registryUsername": "",
+    "registryPassword": "",
+    "x": 840,
+    "y": 60,
+    "wires": [
+      [
+        "t-debug-tp-event"
+      ]
+    ]
+  },
+  {
+    "id": "t-debug-tp-event",
+    "type": "debug",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-txn-processor",
+    "name": "Event received",
+    "active": false,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 1060,
+    "y": 60,
+    "wires": []
+  },
+  {
+    "id": "t-inj-tp-refresh",
+    "type": "inject",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-txn-processor",
+    "name": "Refresh counts",
+    "props": [],
+    "repeat": "",
+    "crontab": "",
+    "once": true,
+    "onceDelay": 0.1,
+    "topic": "",
+    "x": 840,
+    "y": 140,
+    "wires": [
+      [
+        "t-postgres-tp-counts"
+      ]
+    ]
+  },
+  {
+    "id": "t-postgres-tp-counts",
+    "type": "postgresql",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-txn-processor",
+    "name": "TXN table counts",
+    "query": "SELECT table_name, (xpath('/row/c/text()', query_to_xml(format('SELECT count(*) AS c FROM %I', table_name), false, true, '')))[1]::text::int AS count FROM information_schema.tables WHERE table_schema = 'public'",
+    "postgreSQLConfig": "719dd7cb729ea8d1",
+    "split": false,
+    "rowsPerMsg": 1,
+    "outputs": 1,
+    "x": 1060,
+    "y": 140,
+    "wires": [
+      [
+        "t-debug-tp-counts"
+      ]
+    ]
+  },
+  {
+    "id": "t-debug-tp-counts",
+    "type": "debug",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-txn-processor",
+    "name": "Counts",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 1260,
+    "y": 140,
+    "wires": []
   },
   {
     "id": "t-inj-user-health",
@@ -805,8 +804,8 @@
     "g": "g-transacto-kafka-producer",
     "name": "Mimic data-stream-service",
     "info": "Sends a random TRANSACTION_POSTED to raw-transactions immediately, mimicking what data-stream-service does every 10 min.",
-    "x": 430,
-    "y": 740,
+    "x": 410,
+    "y": 60,
     "wires": []
   },
   {
@@ -826,8 +825,8 @@
     "once": false,
     "onceDelay": 0.1,
     "topic": "send-txn",
-    "x": 280,
-    "y": 760,
+    "x": 220,
+    "y": 100,
     "wires": [
       [
         "t-func-gen-txn"
@@ -842,8 +841,8 @@
     "name": "Generate random txn",
     "func": "const accounts = ['ACC-1001', 'ACC-1002', 'ACC-2001', 'ACC-2002', 'ACC-3001'];\nconst currencies = ['USD', 'EUR', 'GBP'];\nconst descriptions = ['Payment for services', 'Invoice INV-2024', 'Transfer to savings', 'Refund order #1234', 'Salary payment'];\n\nconst srcIdx = Math.floor(Math.random() * accounts.length);\nlet dstIdx = Math.floor(Math.random() * (accounts.length - 1));\nif (dstIdx >= srcIdx) dstIdx++;\n\nmsg.payload = {\n  eventId: 'evt-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8),\n  eventType: 'TRANSACTION_POSTED',\n  timestamp: new Date().toISOString(),\n  payload: {\n    transactionId: 'txn-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),\n    sourceAccountId: accounts[srcIdx],\n    destinationAccountId: accounts[dstIdx],\n    amount: Math.round((Math.random() * 5000 + 10) * 100) / 100,\n    currency: currencies[Math.floor(Math.random() * currencies.length)],\n    description: descriptions[Math.floor(Math.random() * descriptions.length)]\n  }\n};\n\nreturn msg;",
     "outputs": 1,
-    "x": 420,
-    "y": 800,
+    "x": 360,
+    "y": 140,
     "wires": [
       [
         "t-kafka-producer"
@@ -864,8 +863,8 @@
     "useSchemaValidation": false,
     "validateOnly": false,
     "useiot": false,
-    "x": 540,
-    "y": 840,
+    "x": 480,
+    "y": 180,
     "wires": [
       [
         "t-debug-sent-txn"
@@ -886,8 +885,8 @@
     "targetType": "msg",
     "statusVal": "",
     "statusType": "auto",
-    "x": 630,
-    "y": 880,
+    "x": 570,
+    "y": 220,
     "wires": []
   },
   {
