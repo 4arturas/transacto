@@ -38,8 +38,8 @@ public interface ProcessedEventRepository extends JpaRepository<ProcessedEvent, 
           AND (:currency IS NULL OR raw_event->'payload'->>'currency' = :currency)
           AND (:minAmount IS NULL OR (raw_event->'payload'->>'amount')::numeric >= :minAmount)
           AND (:maxAmount IS NULL OR (raw_event->'payload'->>'amount')::numeric <= :maxAmount)
-          AND (:fromDate IS NULL OR processed_at >= :fromDate::timestamptz)
-          AND (:toDate IS NULL OR processed_at <= :toDate::timestamptz)
+          AND (:fromDate IS NULL OR processed_at >= CAST(:fromDate AS timestamptz))
+          AND (:toDate IS NULL OR processed_at <= CAST(:toDate AS timestamptz))
         ORDER BY
             CASE WHEN :sortBy = 'processed_at' AND :sortOrder = 'desc' THEN processed_at END DESC,
             CASE WHEN :sortBy = 'processed_at' AND :sortOrder != 'desc' THEN processed_at END ASC,
@@ -77,8 +77,8 @@ public interface ProcessedEventRepository extends JpaRepository<ProcessedEvent, 
           AND (:currency IS NULL OR raw_event->'payload'->>'currency' = :currency)
           AND (:minAmount IS NULL OR (raw_event->'payload'->>'amount')::numeric >= :minAmount)
           AND (:maxAmount IS NULL OR (raw_event->'payload'->>'amount')::numeric <= :maxAmount)
-          AND (:fromDate IS NULL OR processed_at >= :fromDate::timestamptz)
-          AND (:toDate IS NULL OR processed_at <= :toDate::timestamptz)
+          AND (:fromDate IS NULL OR processed_at >= CAST(:fromDate AS timestamptz))
+          AND (:toDate IS NULL OR processed_at <= CAST(:toDate AS timestamptz))
         """, nativeQuery = true)
     long countFilteredTransactions(
         @Param("transactionId") String transactionId,

@@ -13,9 +13,11 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  jackson:
+    property-naming-strategy: SNAKE_CASE
 
 app:
   jwt:
-    secret: dev-jwt-secret
+    secret: dev-jwt-secret-32-chars-min-length
   jwt-service:
     url: http://jwt-api-service:3000

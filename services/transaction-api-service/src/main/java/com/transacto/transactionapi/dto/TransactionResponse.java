@@ -1,7 +1,7 @@
 package com.transacto.transactionapi.dto;
 
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import java.time.Instant;
 
 public class TransactionResponse {
 
@@ -16,7 +16,7 @@ public class TransactionResponse {
     private String currency;
     private String description;
     private Object rawEventFull;
-    private OffsetDateTime processedAt;
+    private Instant processedAt;
 
     public String getEventId() { return eventId; }
     public void setEventId(String eventId) { this.eventId = eventId; }
@@ -40,6 +40,6 @@ public class TransactionResponse {
     public void setDescription(String description) { this.description = description; }
     public Object getRawEventFull() { return rawEventFull; }
     public void setRawEventFull(Object rawEventFull) { this.rawEventFull = rawEventFull; }
-    public OffsetDateTime getProcessedAt() { return processedAt; }
-    public void setProcessedAt(OffsetDateTime processedAt) { this.processedAt = processedAt; }
+    public Instant getProcessedAt() { return processedAt; }
+    public void setProcessedAt(Instant processedAt) { this.processedAt = processedAt; }
 }

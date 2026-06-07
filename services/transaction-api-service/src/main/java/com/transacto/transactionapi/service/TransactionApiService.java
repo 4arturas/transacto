@@ -8,7 +8,7 @@ import com.transacto.transactionapi.repository.ProcessedEventRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -122,7 +122,7 @@ public class TransactionApiService {
         } catch (Exception e) {
             t.setRawEventFull(row[10]);
         }
-        t.setProcessedAt((OffsetDateTime) row[11]);
+        t.setProcessedAt((java.time.Instant) row[11]);
         return t;
     }
 
@@ -133,7 +133,7 @@ public class TransactionApiService {
             a.setAccountId((String) row[0]);
             a.setBalance((BigDecimal) row[1]);
             a.setCurrency((String) row[2]);
-            a.setUpdatedAt((OffsetDateTime) row[3]);
+            a.setUpdatedAt((Instant) row[3]);
             result.add(a);
         }
         return result;
@@ -144,7 +144,7 @@ public class TransactionApiService {
         r.setAccountId(a.getAccountId());
         r.setBalance(a.getBalance());
         r.setCurrency(a.getCurrency());
-        r.setUpdatedAt(a.getUpdatedAt());
+        r.setUpdatedAt(a.getUpdatedAt().toInstant());
         return r;
     }
 }
