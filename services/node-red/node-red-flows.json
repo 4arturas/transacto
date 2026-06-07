@@ -67,17 +67,20 @@
       "t-canary-http-user",
       "t-canary-http-jwt",
       "t-canary-http-txn",
-      "t-canary-join",
-      "t-canary-evaluate",
-      "t-canary-trigger",
+      "t-canary-user-state",
+      "t-canary-jwt-state",
+      "t-canary-txn-state",
+      "t-canary-user-trigger",
+      "t-canary-jwt-trigger",
+      "t-canary-txn-trigger",
       "t-canary-email",
       "t-canary-sms",
       "t-canary-debug"
     ],
     "x": 114,
     "y": 79,
-    "w": 1320,
-    "h": 322
+    "w": 1070,
+    "h": 460
   },
   {
     "id": "t-canary-timer",
@@ -97,7 +100,7 @@
     "onceDelay": 5,
     "topic": "canary",
     "x": 160,
-    "y": 160,
+    "y": 240,
     "wires": [
       [
         "t-canary-http-user",
@@ -120,7 +123,7 @@
     "y": 100,
     "wires": [
       [
-        "t-canary-join"
+        "t-canary-user-state"
       ]
     ]
   },
@@ -135,10 +138,10 @@
     "url": "http://jwt-api-service:3000/health",
     "tls": "",
     "x": 380,
-    "y": 180,
+    "y": 240,
     "wires": [
       [
-        "t-canary-join"
+        "t-canary-jwt-state"
       ]
     ]
   },
@@ -153,55 +156,63 @@
     "url": "http://transaction-api-service:4000/health",
     "tls": "",
     "x": 380,
-    "y": 260,
+    "y": 380,
     "wires": [
       [
-        "t-canary-join"
+        "t-canary-txn-state"
       ]
     ]
   },
   {
-    "id": "t-canary-join",
-    "type": "join",
-    "z": "tab-canary",
-    "g": "g-canary",
-    "name": "Join 3 results",
-    "mode": "custom",
-    "build": "array",
-    "property": "payload",
-    "propertyType": "msg",
-    "key": "topic",
-    "joiner": "\\n",
-    "joinmode": "insert",
-    "accumulate": false,
-    "timeout": "5",
-    "count": "3",
-    "x": 600,
-    "y": 180,
-    "wires": [
-      [
-        "t-canary-evaluate"
-      ]
-    ]
-  },
-  {
-    "id": "t-canary-evaluate",
+    "id": "t-canary-user-state",
     "type": "function",
     "z": "tab-canary",
     "g": "g-canary",
-    "name": "Evaluate & state detect",
-    "func": "var results = msg.payload;\nvar allHealthy = results.every(function(r) { return r && r.status === 'ok'; });\nvar wasDown = context.get('wasDown') || false;\n\ncontext.set('lastDetail', JSON.stringify(results));\n\nif (!allHealthy && !wasDown) {\n  context.set('wasDown', true);\n  context.set('downTime', Date.now());\n  msg.payload = 'DOWN';\n  return msg;\n}\nif (allHealthy && wasDown) {\n  context.set('wasDown', false);\n  msg.payload = 'HEALTHY';\n  return msg;\n}\nreturn null;",
+    "name": "User state",
+    "func": "var healthy = msg.payload && msg.payload.status === 'ok';\nvar wasDown = context.get('userDown') || false;\n\nif (!healthy && !wasDown) {\n  context.set('userDown', true);\n  msg.payload = 'DOWN';\n  msg.service = 'user-api-service';\n  return msg;\n}\nif (healthy && wasDown) {\n  context.set('userDown', false);\n  msg.payload = 'HEALTHY';\n  msg.service = 'user-api-service';\n  return msg;\n}\nreturn null;",
     "outputs": 1,
-    "x": 800,
-    "y": 180,
+    "x": 580,
+    "y": 100,
     "wires": [
       [
-        "t-canary-trigger"
+        "t-canary-user-trigger"
       ]
     ]
   },
   {
-    "id": "t-canary-trigger",
+    "id": "t-canary-jwt-state",
+    "type": "function",
+    "z": "tab-canary",
+    "g": "g-canary",
+    "name": "JWT state",
+    "func": "var healthy = msg.payload && msg.payload.status === 'ok';\nvar wasDown = context.get('jwtDown') || false;\n\nif (!healthy && !wasDown) {\n  context.set('jwtDown', true);\n  msg.payload = 'DOWN';\n  msg.service = 'jwt-api-service';\n  return msg;\n}\nif (healthy && wasDown) {\n  context.set('jwtDown', false);\n  msg.payload = 'HEALTHY';\n  msg.service = 'jwt-api-service';\n  return msg;\n}\nreturn null;",
+    "outputs": 1,
+    "x": 580,
+    "y": 240,
+    "wires": [
+      [
+        "t-canary-jwt-trigger"
+      ]
+    ]
+  },
+  {
+    "id": "t-canary-txn-state",
+    "type": "function",
+    "z": "tab-canary",
+    "g": "g-canary",
+    "name": "Txn state",
+    "func": "var healthy = msg.payload && msg.payload.status === 'ok';\nvar wasDown = context.get('txnDown') || false;\n\nif (!healthy && !wasDown) {\n  context.set('txnDown', true);\n  msg.payload = 'DOWN';\n  msg.service = 'transaction-api-service';\n  return msg;\n}\nif (healthy && wasDown) {\n  context.set('txnDown', false);\n  msg.payload = 'HEALTHY';\n  msg.service = 'transaction-api-service';\n  return msg;\n}\nreturn null;",
+    "outputs": 1,
+    "x": 580,
+    "y": 380,
+    "wires": [
+      [
+        "t-canary-txn-trigger"
+      ]
+    ]
+  },
+  {
+    "id": "t-canary-user-trigger",
     "type": "trigger",
     "z": "tab-canary",
     "g": "g-canary",
@@ -217,8 +228,60 @@
     "resetType": "msg",
     "topic": "canary",
     "outputs": 1,
-    "x": 1000,
-    "y": 180,
+    "x": 780,
+    "y": 100,
+    "wires": [
+      [
+        "t-canary-email",
+        "t-canary-sms"
+      ]
+    ]
+  },
+  {
+    "id": "t-canary-jwt-trigger",
+    "type": "trigger",
+    "z": "tab-canary",
+    "g": "g-canary",
+    "name": "5min cooldown",
+    "op1": "",
+    "op2": "",
+    "op1type": "str",
+    "op2type": "str",
+    "duration": "300",
+    "extend": true,
+    "units": "seconds",
+    "reset": "",
+    "resetType": "msg",
+    "topic": "canary",
+    "outputs": 1,
+    "x": 780,
+    "y": 240,
+    "wires": [
+      [
+        "t-canary-email",
+        "t-canary-sms"
+      ]
+    ]
+  },
+  {
+    "id": "t-canary-txn-trigger",
+    "type": "trigger",
+    "z": "tab-canary",
+    "g": "g-canary",
+    "name": "5min cooldown",
+    "op1": "",
+    "op2": "",
+    "op1type": "str",
+    "op2type": "str",
+    "duration": "300",
+    "extend": true,
+    "units": "seconds",
+    "reset": "",
+    "resetType": "msg",
+    "topic": "canary",
+    "outputs": 1,
+    "x": 780,
+    "y": 380,
     "wires": [
       [
         "t-canary-email",
@@ -232,10 +295,10 @@
     "z": "tab-canary",
     "g": "g-canary",
     "name": "Mock Email",
-    "func": "var info = JSON.parse(context.get('lastDetail') || '[]');\nconsole.log('---[MOCK EMAIL]---');\nconsole.log('To: ops@transacto.com');\nconsole.log('Subject:', msg.payload === 'DOWN' ? 'CRITICAL - Canary Alert' : 'INFO - Canary Recovery');\nconsole.log('Detail:', info);\nconsole.log('---[/MOCK EMAIL]---');\nmsg.status = { fill: msg.payload === 'DOWN' ? 'red' : 'green', shape: 'ring', text: msg.payload };\nreturn msg;",
+    "func": "var s = msg.service || 'unknown';\nconsole.log('---[MOCK EMAIL]---');\nconsole.log('To: ops@transacto.com');\nconsole.log('Subject:', msg.payload === 'DOWN' ? 'CRITICAL - ' + s + ' DOWN' : 'INFO - ' + s + ' recovered');\nconsole.log('---[/MOCK EMAIL]---');\nmsg.status = { fill: msg.payload === 'DOWN' ? 'red' : 'green', shape: 'ring', text: s + ' ' + msg.payload };\nreturn msg;",
     "outputs": 1,
-    "x": 1180,
-    "y": 140,
+    "x": 960,
+    "y": 240,
     "wires": [
       [
         "t-canary-debug"
@@ -248,10 +311,10 @@
     "z": "tab-canary",
     "g": "g-canary",
     "name": "Mock SMS",
-    "func": "console.log('---[MOCK SMS]---');\nconsole.log('To: +45 1234 5678');\nconsole.log('Message:', msg.payload === 'DOWN' ? 'CANARY ALERT - services DOWN' : 'CANARY OK - services recovered');\nconsole.log('---[/MOCK SMS]---');\nreturn msg;",
+    "func": "var s = msg.service || 'unknown';\nconsole.log('---[MOCK SMS]---');\nconsole.log('To: +45 1234 5678');\nconsole.log('Message:', msg.payload === 'DOWN' ? s + ' is DOWN' : s + ' is HEALTHY');\nconsole.log('---[/MOCK SMS]---');\nreturn msg;",
     "outputs": 1,
-    "x": 1180,
-    "y": 220,
+    "x": 960,
+    "y": 340,
     "wires": [
       [
         "t-canary-debug"
@@ -272,8 +335,8 @@
     "targetType": "msg",
     "statusVal": "",
     "statusType": "auto",
-    "x": 1360,
-    "y": 180,
+    "x": 1140,
+    "y": 240,
     "wires": []
   },
   {
