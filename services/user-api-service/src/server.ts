@@ -28,7 +28,7 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? 'admin123';
 if (!DATABASE_URL) throw new Error('DATABASE_URL is required');
 if (!JWT_SECRET) throw new Error('JWT_SECRET is required');
 
-const JWT_SERVICE_URL = process.env.JWT_SERVICE_URL ?? 'http://jwt-service:3000';
+const JWT_SERVICE_URL = process.env.JWT_SERVICE_URL ?? 'http://jwt-api-service:3000';
 
 const pool = new Pool({ connectionString: DATABASE_URL });
 const app = express();

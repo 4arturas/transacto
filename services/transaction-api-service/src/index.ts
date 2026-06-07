@@ -7,7 +7,7 @@ import { config } from './config.js';
 
 type AuthenticatedRequest = Request & { user?: { id: string; email: string; role: string } };
 
-const JWT_SERVICE_URL = process.env.JWT_SERVICE_URL ?? 'http://jwt-service:3000';
+const JWT_SERVICE_URL = process.env.JWT_SERVICE_URL ?? 'http://jwt-api-service:3000';
 
 const pool = new Pool({ connectionString: config.databaseUrl });
 const app = express();

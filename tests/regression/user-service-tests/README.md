@@ -1,5 +1,5 @@
 ```sh
-hurl --test --variables-file .\\\\tests\\\\user-service-tests\\\\variables.env --file-root . .\\\\tests\\\\user-service-tests\\\\run-all.hurl
+hurl --test --variables-file .\\tests\\user-service-tests\\variables.env --file-root . .\\tests\\user-service-tests\\run-all.hurl
 ```
 
 ```sh

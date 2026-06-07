@@ -27,7 +27,7 @@ services:
   # ── JWT Service Database ──────────────────────────────────────
   jwt-db:
     image: postgres:12
-    container_name: jwt-service-postgres
+    container_name: jwt-api-service-postgres
     restart: unless-stopped
     ports:
       - "5432:5432"
@@ -59,11 +59,11 @@ services:
       retries: 5
 
   # ── JWT Service ───────────────────────────────────────────────
-  jwt-service:
+  jwt-api-service:
     build:
-      context: ./services/jwt-service
+      context: ./services/jwt-api-service
       dockerfile: Dockerfile
-    container_name: jwt-service
+    container_name: jwt-api-service
     restart: unless-stopped
     ports:
       - "3000:3000"
@@ -127,17 +127,17 @@ services:
       PORT: 4000
       DATABASE_URL: postgres://postgres:postgres@txn-db:5432/transaction_processor
       JWT_SECRET: dev-jwt-secret
-      JWT_SERVICE_URL: http://jwt-service:3000
+      JWT_SERVICE_URL: http://jwt-api-service:3000
     depends_on:
       txn-db:
         condition: service_healthy
 
   # ── User Service (Admin & Permissions) ─────────────────────────
-  user-service:
+  user-api-service:
     build:
-      context: ./services/user-service
+      context: ./services/user-api-service
       dockerfile: Dockerfile
-    container_name: user-service
+    container_name: user-api-service
     restart: unless-stopped
     ports:
       - "3100:3100"
@@ -145,7 +145,7 @@ services:
       PORT: 3100
       DATABASE_URL: postgres://jwt_service:jwt_service003@jwt-db:5432/jwt_service
       JWT_SECRET: dev-jwt-secret
-      JWT_SERVICE_URL: http://jwt-service:3000
+      JWT_SERVICE_URL: http://jwt-api-service:3000
       ADMIN_EMAIL: admin@example.com
       ADMIN_PASSWORD: admin123
     depends_on:
@@ -164,9 +164,9 @@ services:
     environment:
       TZ: Europe/Copenhagen
       KAFKA_BROKER: kafka:9092
-      USER_SVC_HOST: user-service
+      USER_SVC_HOST: user-api-service
       USER_SVC_PORT: "3100"
-      JWT_SVC_HOST: jwt-service
+      JWT_SVC_HOST: jwt-api-service
       JWT_SVC_PORT: "3000"
       TXN_SVC_HOST: transaction-api-service
       TXN_SVC_PORT: "4000"

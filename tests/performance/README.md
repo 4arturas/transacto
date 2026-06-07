@@ -26,7 +26,7 @@ sudo apt install k6
 | **Smoke** | `transaction-api-smoke.js` | 1 VU, 1 iteration — verify basic functionality |
 | **Load** | `transaction-api-load.js` | Ramp to 30 VUs over 2 min — expected traffic |
 | **Stress** | `transaction-api-stress.js` | Ramp to 300 VUs — find breaking point |
-| **Smoke** | `user-service-smoke.js` | 1 VU, 1 iteration — verify user-service |
+| **Smoke** | `user-service-smoke.js` | 1 VU, 1 iteration — verify user-api-service |
 | **Load** | `user-service-load.js` | Ramp to 50 VUs over 2 min — expected traffic |
 
 ## Run

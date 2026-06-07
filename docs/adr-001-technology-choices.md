@@ -157,7 +157,7 @@
 | Node-RED | `task.md`, `node-red-flows.json` |
 | Kafka | `docker-compose.yml`, `data-stream-service/`, `transaction-processor-service/` |
 | PostgreSQL | All SQL queries in `node-red-flows.json` |
-| JWT | `jwt-service/`, `generate-jwt.http` |
+| JWT | `jwt-api-service/`, `generate-jwt.http` |
 | Hurl | `tests/regression/` |
 | k6 | `tests/performance/` |
-| TypeScript + Express | `jwt-service/`, `transaction-api-service/`, `user-service/` |
+| TypeScript + Express | `jwt-api-service/`, `transaction-api-service/`, `user-api-service/` |
