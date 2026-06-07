@@ -357,11 +357,12 @@
     "id": "g-transacto-kafka-producer",
     "type": "group",
     "z": "c203cc42e86554dd",
-    "name": "Kafka Producer",
+    "name": "Manual Txn Inject",
     "style": {
       "label": true
     },
     "nodes": [
+      "t-comment-manual-txn",
       "t-inj-send-txn",
       "t-func-gen-txn",
       "t-kafka-producer",
@@ -675,11 +676,22 @@
     "wires": []
   },
   {
+    "id": "t-comment-manual-txn",
+    "type": "comment",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-kafka-producer",
+    "name": "Manual Txn",
+    "info": "Sends a random TRANSACTION_POSTED to raw-transactions immediately. Use when you don't want to wait 10 min for the automated data-stream-service.",
+    "x": 430,
+    "y": 740,
+    "wires": []
+  },
+  {
     "id": "t-inj-send-txn",
     "type": "inject",
     "z": "c203cc42e86554dd",
     "g": "g-transacto-kafka-producer",
-    "name": "Send Transaction",
+    "name": "Inject Txn Now",
     "props": [
       {
         "p": "topic",
