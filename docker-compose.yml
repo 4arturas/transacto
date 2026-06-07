@@ -93,6 +93,7 @@ services:
       KAFKA_BROKERS: kafka:9092
       KAFKA_CLIENT_ID: data-stream-simulator
       KAFKA_TOPIC: raw-transactions
+      KAFKA_PUBLISH_INTERVAL_SECONDS: 10
     depends_on:
       kafka:
         condition: service_healthy

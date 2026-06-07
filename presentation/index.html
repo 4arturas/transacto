@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1280, height=720">
+<title>How I Think About Architecture</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
+<style>
+.slides h2 { color: #2c3e50; }
+.slides h3 { color: #34495e; }
+.slides li { font-size: 0.85em; }
+.slides .comparison { display: flex; gap: 2em; justify-content: center; }
+.slides .comparison > div { flex: 1; padding: 1em; border-radius: 0.5em; }
+.slides .bad { background: #fde8e8; }
+.slides .good { background: #e8fde8; }
+.slides table { font-size: 0.75em; }
+.slides .screenshot { max-height: 420px; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.slides .tight p { margin: 0.3em 0; }
+.reveal .code { font-size: 0.6em; }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- Title -->
+<section>
+<h1>How I Think About Architecture</h1>
+<h3 style="color:#7f8c8d;">Working Prototypes, Not Static Diagrams</h3>
+<p style="margin-top:2em;">Node-RED · Hurl · k6 · Docker</p>
+<p>Build a running prototype first — executable tests from day one</p>
+</section>
+
+<!-- The Problem -->
+<section>
+<h2>The Problem</h2>
+<ol>
+<li>Open Draw.io or Visio</li>
+<li>Draw boxes and arrows</li>
+<li>Write a long document</li>
+<li>Hand it over to developers</li>
+<li>Developers guess what it means</li>
+<li>Implementation is wrong</li>
+<li>Rework</li>
+</ol>
+<p class="fragment" style="font-size:1.4em; font-weight:bold; margin-top:1em;">I work differently.</p>
+</section>
+
+<!-- My Approach -->
+<section>
+<h2>My Approach</h2>
+<blockquote style="font-size:1.2em; margin-bottom:1em;">Build a working prototype first. Then hand it over.</blockquote>
+<div class="comparison">
+<div class="bad">
+<h4>Traditional</h4>
+<ul>
+<li>Draw.io / Visio diagrams</li>
+<li>PDF specifications</li>
+<li>Handover documents</li>
+<li>Ambiguity and rework</li>
+</ul>
+</div>
+<div class="good">
+<h4>My tools</h4>
+<ul>
+<li><strong>Node-RED</strong> — running prototype</li>
+<li><strong>Hurl</strong> — executable tests</li>
+<li><strong>k6</strong> — load testing from day one</li>
+<li><strong>Docker</strong> — one command to run</li>
+</ul>
+</div>
+</div>
+</section>
+
+<!-- Practical Example -->
+<section>
+<h2>A Practical Example</h2>
+<p>Let's imagine a company called <strong>Transacto</strong>.</p>
+<p style="margin-top:1em;">Existing services:</p>
+<ul>
+<li><strong>data-stream-service</strong> — sends banking events to Kafka</li>
+<li><strong>jwt-api-service</strong> — user login and tokens</li>
+<li><strong>transaction-processor-service</strong> — reads events, saves to database</li>
+</ul>
+<p style="margin-top:1em;">They ask me: <em>"Design a new REST API for transactions and accounts."</em></p>
+<p>This is how I did it.</p>
+</section>
+
+<!-- System Overview -->
+<section>
+<section>
+<h2>System Overview</h2>
+<img src="diagrams/system-overview.png" style="max-height:500px;">
+</section>
+<section>
+<h2>Security Overview</h2>
+<img src="diagrams/security-overview.png" style="max-height:500px;">
+</section>
+</section>
+
+<!-- Understanding Existing System -->
+<section>
+<h2>Understanding the Existing System</h2>
+<p>Before designing the new API, I needed to understand how the existing services work.</p>
+<p>I created two Node-RED flows to explore them:</p>
+<ul>
+<li><strong>"JWT Auth API"</strong> — login, register, refresh tokens</li>
+<li><strong>"User Service"</strong> — create, read, update, delete users</li>
+</ul>
+<p>This helped me understand the authentication flow, data models, and API patterns.</p>
+</section>
+
+<!-- Step 1: Node-RED Prototype -->
+<section>
+<h2>Step 1: Build a Prototype in Node-RED</h2>
+<p>Instead of drawing diagrams, I opened Node-RED and built the API.</p>
+<div style="display:flex; gap:2em; margin-top:1em;">
+<div style="flex:1;">
+<p><strong>A running prototype is better because:</strong></p>
+<ul>
+<li>Developers can test it immediately</li>
+<li>Business people can see it working</li>
+<li>We find problems before writing code</li>
+<li>Changes take seconds, not days</li>
+</ul>
+</div>
+<div style="flex:1;">
+<img src="screenshots/Transacto.png" class="screenshot">
+</div>
+</div>
+</section>
+
+<!-- Flow Tabs: Row 1 -->
+<section>
+<section>
+<h2>Transacto Dashboard</h2>
+<p>The main view. Shows all services and their health status.</p>
+<img src="screenshots/Transacto.png" class="screenshot">
+</section>
+<section>
+<h2>JWT Auth API</h2>
+<p>Login, register, refresh tokens. Every call needs a valid token.</p>
+<img src="screenshots/JWT_Auth_API.png" class="screenshot">
+</section>
+</section>
+
+<!-- Flow Tabs: Row 2 -->
+<section>
+<section>
+<h2>User Service</h2>
+<p>Create, read, update, delete users. Admins have more rights.</p>
+<img src="screenshots/User_Service.png" class="screenshot">
+</section>
+<section>
+<h2>Transaction API Prototype</h2>
+<p>The new service I designed with 6 endpoints.</p>
+<ul>
+<li><code>GET /health</code></li>
+<li><code>GET /api/stats</code></li>
+<li><code>GET /api/transactions</code></li>
+<li><code>GET /api/transactions/:id</code></li>
+<li><code>GET /api/accounts</code></li>
+<li><code>GET /api/accounts/:id</code></li>
+</ul>
+<img src="screenshots/Transaction_API_Prototype.png" class="screenshot">
+</section>
+</section>
+
+<!-- Flow Tabs: Row 3 -->
+<section>
+<section>
+<h2>Performance Tests</h2>
+<p>Load testing from the start with k6.</p>
+<ul>
+<li><strong>Smoke</strong> — 1 user, basic check</li>
+<li><strong>Load</strong> — 50 users, normal traffic</li>
+<li><strong>Stress</strong> — 300 users, find the limit</li>
+</ul>
+<img src="screenshots/Performance_Tests.png" class="screenshot">
+</section>
+<section>
+<h2>Regression Tests</h2>
+<p>Executable tests with Hurl. Same tests check both the prototype and the real implementation.</p>
+<img src="screenshots/Regression_Tests.png" class="screenshot">
+</section>
+</section>
+
+<!-- Canary Monitoring -->
+<section>
+<section>
+<h2>Canary Monitoring</h2>
+<p>Node-RED mimics <strong>AWS Canary</strong> — checking if systems are healthy.</p>
+<img src="screenshots/Canary_Monitoring.png" class="screenshot">
+<p>Every 60s checks all services. If one is down, sends alert (mock email + SMS). 5-minute cooldown.</p>
+</section>
+</section>
+
+<!-- Key Difference -->
+<section>
+<h2>The Key Difference</h2>
+<div class="comparison">
+<div class="bad">
+<h3>How most architects work</h3>
+<ul>
+<li>Draw static diagrams</li>
+<li>Write a specification</li>
+<li>Hand over documents</li>
+<li>Changes are slow</li>
+<li>Ambiguity and rework</li>
+</ul>
+</div>
+<div class="good">
+<h3>How I work</h3>
+<ul>
+<li><strong>Build a running prototype</strong></li>
+<li><strong>Write executable tests</strong></li>
+<li><strong>Hand over a working system</strong></li>
+<li><strong>Change the flow, click deploy</strong></li>
+<li><strong>Tests pass = correct</strong></li>
+</ul>
+</div>
+</div>
+</section>
+
+<!-- Why This Matters -->
+<section>
+<h2>Why This Matters</h2>
+<p>When you hire an architect, you want someone who:</p>
+<ul>
+<li class="fragment"><strong>Reduces risk</strong> — prototype finds problems early</li>
+<li class="fragment"><strong>Saves time</strong> — no back and forth between diagram and code</li>
+<li class="fragment"><strong>Makes things clear</strong> — running code is better than a PDF</li>
+<li class="fragment"><strong>Has a "change mindset"</strong> — always looking for better ways</li>
+</ul>
+<p class="fragment" style="margin-top:1.5em; font-style:italic;">This project shows exactly that.</p>
+</section>
+
+<!-- Try It Yourself -->
+<section>
+<section>
+<h2>Try It Yourself</h2>
+<pre><code class="language-bash" data-trim>
+git clone https://github.com/4arturas/transacto.git
+cd transacto
+docker compose up --build
+</code></pre>
+<table style="margin-top:1em;">
+<thead><tr><th>Web UI</th><th>Address</th></tr></thead>
+<tbody>
+<tr><td>Transaction dashboard</td><td><code>http://localhost:4000</code></td></tr>
+<tr><td>Admin panel</td><td><code>http://localhost:3100</code></td></tr>
+<tr><td>Node-RED editor</td><td><code>http://localhost:1880</code></td></tr>
+<tr><td>JWT Auth API</td><td><code>http://localhost:3000</code></td></tr>
+</tbody>
+</table>
+</section>
+<section>
+<h2>Demo Credentials</h2>
+<table>
+<thead><tr><th>Role</th><th>Email</th><th>Password</th></tr></thead>
+<tbody>
+<tr><td>Admin</td><td><code>admin@example.com</code></td><td><code>admin123</code></td></tr>
+<tr><td>Regular user</td><td><code>alice@example.com</code></td><td><code>secret123</code></td></tr>
+</tbody>
+</table>
+<h3 style="margin-top:1.5em;">Run the tests</h3>
+<pre><code class="language-bash" data-trim>
+# Functional (Hurl)
+hurl --test --file-root . tests/regression/user-service-tests/run-all.hurl
+hurl --test --file-root . tests/regression/jwt-api-service-tests/run-all.hurl
+hurl --test --file-root . tests/regression/transaction-api-service-tests/run-all.hurl
+
+# Performance (k6)
+k6 run tests/performance/user-service-load.js
+k6 run tests/performance/jwt-api-load.js
+k6 run tests/performance/transaction-api-load.js
+</code></pre>
+</section>
+</section>
+
+<!-- Thank You -->
+<section>
+<h1>Thank You</h1>
+<p style="margin-top:1em;">Repository: <a href="https://github.com/4arturas/transacto">github.com/4arturas/transacto</a></p>
+<p style="color:#7f8c8d; margin-top:0.5em;">Spring Boot 4.0.6 · Java 25 · Node-RED · Kafka · PostgreSQL · Docker</p>
+<p style="margin-top:2em; font-size:1.4em;">Questions?</p>
+</section>
+
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+<script>
+Reveal.initialize({
+  width: 1280,
+  height: 720,
+  plugins: [RevealHighlight],
+  slideNumber: true,
+  hash: true,
+  transition: 'slide',
+  backgroundTransition: 'fade'
+});
+</script>
+</body>
+</html>
