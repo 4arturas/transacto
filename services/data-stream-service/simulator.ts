@@ -61,7 +61,7 @@ function randomAmount(): number {
 }
 
 function randomSleepMs(): number {
-  return 1000 + Math.floor(Math.random() * 9000);
+  return 10 * 60 * 1000;
 }
 
 function buildTransactionEvent(): TransactionEvent {
