@@ -374,6 +374,129 @@
     "h": 202
   },
   {
+    "id": "g-transacto-txn-processor",
+    "type": "group",
+    "z": "c203cc42e86554dd",
+    "name": "Mimic transaction-processor-service",
+    "style": {
+      "label": true
+    },
+    "nodes": [
+      "t-consumer-tp",
+      "t-debug-tp-event",
+      "t-inj-tp-refresh",
+      "t-postgres-tp-counts",
+      "t-debug-tp-counts"
+    ],
+    "x": 834,
+    "y": 740,
+    "w": 592,
+    "h": 202
+  },
+  {
+    "id": "t-consumer-tp",
+    "type": "oriolrius-kafka-consumer",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-txn-processor",
+    "d": true,
+    "name": "raw-transactions",
+    "broker": "040e76c320c91e83",
+    "topic": "raw-transactions",
+    "groupid": "node-red-transacto",
+    "fromOffset": "latest",
+    "encoding": "utf8",
+    "minbytes": "",
+    "maxbytes": "",
+    "useSchemaValidation": false,
+    "registryUrl": "",
+    "schemaSubject": "",
+    "useRegistryAuth": false,
+    "registryUsername": "",
+    "registryPassword": "",
+    "x": 930,
+    "y": 780,
+    "wires": [
+      [
+        "t-debug-tp-event"
+      ]
+    ]
+  },
+  {
+    "id": "t-debug-tp-event",
+    "type": "debug",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-txn-processor",
+    "name": "Event received",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 1150,
+    "y": 780,
+    "wires": []
+  },
+  {
+    "id": "t-inj-tp-refresh",
+    "type": "inject",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-txn-processor",
+    "name": "Refresh counts",
+    "props": [],
+    "repeat": "",
+    "crontab": "",
+    "once": true,
+    "onceDelay": 0.1,
+    "topic": "",
+    "x": 930,
+    "y": 860,
+    "wires": [
+      [
+        "t-postgres-tp-counts"
+      ]
+    ]
+  },
+  {
+    "id": "t-postgres-tp-counts",
+    "type": "postgresql",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-txn-processor",
+    "name": "TXN table counts",
+    "query": "SELECT table_name, (xpath('/row/c/text()', query_to_xml(format('SELECT count(*) AS c FROM %I', table_name), false, true, '')))[1]::text::int AS count FROM information_schema.tables WHERE table_schema = 'public'",
+    "postgreSQLConfig": "719dd7cb729ea8d1",
+    "split": false,
+    "rowsPerMsg": 1,
+    "outputs": 1,
+    "x": 1150,
+    "y": 860,
+    "wires": [
+      [
+        "t-debug-tp-counts"
+      ]
+    ]
+  },
+  {
+    "id": "t-debug-tp-counts",
+    "type": "debug",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-txn-processor",
+    "name": "Counts",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 1350,
+    "y": 860,
+    "wires": []
+  },
+  {
     "id": "040e76c320c91e83",
     "type": "oriolrius-kafka-broker",
     "g": "a8da39c65ad31a9f",
