@@ -1,0 +1,6 @@
+@startuml
+"data-stream-service" --> "transaction-processor-service" : Kafka: TRANSACTION_POSTED
+"transaction-processor-service" --> PostgreSQL : INSERT processed_events
+PostgreSQL --> "transaction-api-service" : SELECT queries
+PostgreSQL --> "Node-RED" : SELECT queries
+@enduml

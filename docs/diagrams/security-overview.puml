@@ -1,0 +1,4 @@
+@startuml
+"jwt-api-service" --> "transaction-api-service" : validates token
+"user-api-service" --> "transaction-api-service" : manages users & roles
+@enduml
