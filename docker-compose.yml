@@ -60,7 +60,6 @@ services:
 
   # ── JWT Service ───────────────────────────────────────────────
   jwt-api-service:
-    image: ghcr.io/4arturas/transacto/jwt-api-service:latest
     build:
       context: ./services/jwt-api-service
       dockerfile: Dockerfile
@@ -83,7 +82,6 @@ services:
 
   # ── Data Stream Service (Kafka Producer) ──────────────────────
   data-stream-service:
-    image: ghcr.io/4arturas/transacto/data-stream-service:latest
     build:
       context: ./services/data-stream-service
       dockerfile: Dockerfile
@@ -100,7 +98,6 @@ services:
 
   # ── Transaction Processor Service (Kafka Consumer) ────────────
   transaction-processor-service:
-    image: ghcr.io/4arturas/transacto/transaction-processor-service:latest
     build:
       context: ./services/transaction-processor-service
       dockerfile: Dockerfile
@@ -120,7 +117,6 @@ services:
 
   # ── Transaction API Service (Java) ──────────────────────────────
   transaction-api-service:
-    image: ghcr.io/4arturas/transacto/transaction-api-service:latest
     build:
       context: ./services/transaction-api-service
       dockerfile: Dockerfile
@@ -141,7 +137,6 @@ services:
 
   # ── User Service (Admin & Permissions) ─────────────────────────
   user-api-service:
-    image: ghcr.io/4arturas/transacto/user-api-service:latest
     build:
       context: ./services/user-api-service
       dockerfile: Dockerfile
@@ -162,7 +157,6 @@ services:
 
   # ── Node-RED ───────────────────────────────────────────────────
   node-red:
-    image: ghcr.io/4arturas/transacto/node-red:latest
     build:
       context: .
       dockerfile: ./services/node-red/Dockerfile
