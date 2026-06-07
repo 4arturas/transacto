@@ -1,11 +1,15 @@
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
-WORKDIR /src
-COPY *.csproj .
-RUN dotnet restore
-COPY . .
-RUN dotnet publish -c Release -o /app
+FROM node:20-slim
 
-FROM mcr.microsoft.com/dotnet/runtime:9.0
 WORKDIR /app
-COPY --from=build /app .
-ENTRYPOINT ["dotnet", "data-stream-service.dll"]
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+ENV NODE_ENV=production
+
+CMD ["node", "dist/simulator.js"]

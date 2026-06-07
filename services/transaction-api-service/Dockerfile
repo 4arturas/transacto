@@ -1,12 +1,17 @@
-FROM maven:3.9-eclipse-temurin-25 AS build
-WORKDIR /app
-COPY pom.xml .
-RUN mvn dependency:go-offline -B
-COPY src ./src
-RUN mvn package -DskipTests -B
+FROM node:20-slim
 
-FROM eclipse-temurin:25-jre
 WORKDIR /app
-COPY --from=build /app/target/transaction-api-service-1.0.0.jar app.jar
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+ENV NODE_ENV=production
+
 EXPOSE 4000
-CMD ["java", "-jar", "app.jar"]
+
+CMD ["node", "dist/index.js"]

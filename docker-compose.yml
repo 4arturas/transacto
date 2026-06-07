@@ -115,7 +115,7 @@ services:
       txn-db:
         condition: service_healthy
 
-  # ── Transaction API Service (Java) ──────────────────────────────
+  # ── Transaction API Service ─────────────────────────────────────
   transaction-api-service:
     build:
       context: ./services/transaction-api-service
@@ -125,12 +125,10 @@ services:
     ports:
       - "4000:4000"
     environment:
-      SERVER_PORT: 4000
-      SPRING_DATASOURCE_URL: jdbc:postgresql://txn-db:5432/transaction_processor
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-      APP_JWT_SECRET: dev-jwt-secret-32-chars-min-length
-      APP_JWT_SERVICE_URL: http://jwt-api-service:3000
+      PORT: 4000
+      DATABASE_URL: postgres://postgres:postgres@txn-db:5432/transaction_processor
+      JWT_SECRET: dev-jwt-secret-32-chars-min-length
+      JWT_SERVICE_URL: http://jwt-api-service:3000
     depends_on:
       txn-db:
         condition: service_healthy
