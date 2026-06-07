@@ -163,6 +163,21 @@ services:
       - "1880:1880"
     environment:
       TZ: Europe/Copenhagen
+      KAFKA_BROKER: kafka:9092
+      USER_SVC_HOST: user-service
+      USER_SVC_PORT: "3100"
+      JWT_SVC_HOST: jwt-service
+      JWT_SVC_PORT: "3000"
+      TXN_SVC_HOST: transaction-api-service
+      TXN_SVC_PORT: "4000"
+      TXN_DB_HOST: txn-db
+      TXN_DB_NAME: transaction_processor
+      TXN_DB_USER: postgres
+      TXN_DB_PASS: postgres
+      JWT_DB_HOST: jwt-db
+      JWT_DB_NAME: jwt_service
+      JWT_DB_USER: jwt_service
+      JWT_DB_PASS: jwt_service003
     volumes:
       - node-red-data:/data
       - .:/project
