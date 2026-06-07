@@ -437,7 +437,7 @@
     "name": "GET /health",
     "method": "GET",
     "ret": "obj",
-    "url": "http://${USER_SVC_HOST}:${USER_SVC_PORT}/health",
+    "url": "http://user-service:3100/health",
     "tls": "",
     "x": 1130,
     "y": 680,
@@ -498,7 +498,7 @@
     "name": "GET /health",
     "method": "GET",
     "ret": "obj",
-    "url": "http://${JWT_SVC_HOST}:${JWT_SVC_PORT}/health",
+    "url": "http://jwt-service:3000/health",
     "tls": "",
     "x": 1130,
     "y": 360,
@@ -559,7 +559,7 @@
     "name": "GET /health",
     "method": "GET",
     "ret": "obj",
-    "url": "http://${TXN_SVC_HOST}:${TXN_SVC_PORT}/health",
+    "url": "http://transaction-api-service:4000/health",
     "tls": "",
     "x": 1130,
     "y": 520,
@@ -698,7 +698,7 @@
     "name": "",
     "method": "GET",
     "ret": "txt",
-    "url": "http://${JWT_SVC_HOST}:${JWT_SVC_PORT}/health",
+    "url": "http://jwt-service:3000/health",
     "tls": "",
     "x": 500,
     "y": 120,
@@ -776,7 +776,7 @@
     "name": "POST",
     "method": "POST",
     "ret": "obj",
-    "url": "http://${JWT_SVC_HOST}:${JWT_SVC_PORT}/api/auth/login",
+    "url": "http://jwt-service:3000/api/auth/login",
     "tls": "",
     "x": 500,
     "y": 200,
@@ -892,7 +892,7 @@
     "name": "POST",
     "method": "POST",
     "ret": "obj",
-    "url": "http://${JWT_SVC_HOST}:${JWT_SVC_PORT}/api/auth/refresh",
+    "url": "http://jwt-service:3000/api/auth/refresh",
     "tls": "",
     "x": 500,
     "y": 280,
@@ -1008,7 +1008,7 @@
     "name": "GET",
     "method": "GET",
     "ret": "obj",
-    "url": "http://${JWT_SVC_HOST}:${JWT_SVC_PORT}/api/auth/me",
+    "url": "http://jwt-service:3000/api/auth/me",
     "tls": "",
     "x": 500,
     "y": 360,
@@ -1100,7 +1100,7 @@
     "name": "",
     "method": "POST",
     "ret": "obj",
-    "url": "http://${USER_SVC_HOST}:${USER_SVC_PORT}/api/login",
+    "url": "http://user-service:3100/api/login",
     "tls": "",
     "x": 600,
     "y": 160,
@@ -1180,7 +1180,7 @@
     "name": "",
     "method": "GET",
     "ret": "obj",
-    "url": "http://${USER_SVC_HOST}:${USER_SVC_PORT}/health",
+    "url": "http://user-service:3100/health",
     "tls": "",
     "x": 460,
     "y": 240,
@@ -1267,7 +1267,7 @@
     "name": "",
     "method": "GET",
     "ret": "obj",
-    "url": "http://${USER_SVC_HOST}:${USER_SVC_PORT}/api/me",
+    "url": "http://user-service:3100/api/me",
     "tls": "",
     "x": 600,
     "y": 320,
@@ -1354,7 +1354,7 @@
     "name": "",
     "method": "GET",
     "ret": "obj",
-    "url": "http://${USER_SVC_HOST}:${USER_SVC_PORT}/api/users",
+    "url": "http://user-service:3100/api/users",
     "tls": "",
     "x": 600,
     "y": 400,
@@ -1448,7 +1448,7 @@
     "name": "",
     "method": "POST",
     "ret": "obj",
-    "url": "http://${USER_SVC_HOST}:${USER_SVC_PORT}/api/users",
+    "url": "http://user-service:3100/api/users",
     "tls": "",
     "x": 610,
     "y": 480,
@@ -1510,7 +1510,7 @@
       {
         "vt": "str",
         "p": "url",
-        "v": "http://${USER_SVC_HOST}:${USER_SVC_PORT}/api/users/"
+        "v": "http://user-service:3100/api/users/"
       }
     ],
     "repeat": "",
@@ -1572,7 +1572,7 @@
     "name": "",
     "method": "GET",
     "ret": "obj",
-    "url": "http://${USER_SVC_HOST}:${USER_SVC_PORT}/api/users/placeholder",
+    "url": "http://user-service:3100/api/users/placeholder",
     "tls": "",
     "x": 610,
     "y": 560,
@@ -1610,7 +1610,7 @@
       {
         "vt": "str",
         "p": "url",
-        "v": "http://${USER_SVC_HOST}:${USER_SVC_PORT}/api/users/"
+        "v": "http://user-service:3100/api/users/"
       }
     ],
     "repeat": "",
@@ -1679,7 +1679,7 @@
     "name": "",
     "method": "PUT",
     "ret": "obj",
-    "url": "http://${USER_SVC_HOST}:${USER_SVC_PORT}/api/users/placeholder/role",
+    "url": "http://user-service:3100/api/users/placeholder/role",
     "tls": "",
     "x": 620,
     "y": 640,
@@ -1717,7 +1717,7 @@
       {
         "vt": "str",
         "p": "url",
-        "v": "http://${USER_SVC_HOST}:${USER_SVC_PORT}/api/users/"
+        "v": "http://user-service:3100/api/users/"
       }
     ],
     "repeat": "",
@@ -1779,7 +1779,7 @@
     "name": "",
     "method": "DELETE",
     "ret": "obj",
-    "url": "http://${USER_SVC_HOST}:${USER_SVC_PORT}/api/users/placeholder",
+    "url": "http://user-service:3100/api/users/placeholder",
     "tls": "",
     "x": 620,
     "y": 720,
@@ -1835,7 +1835,7 @@
     "name": "",
     "method": "GET",
     "ret": "obj",
-    "url": "http://${USER_SVC_HOST}:${USER_SVC_PORT}/api/me",
+    "url": "http://user-service:3100/api/me",
     "tls": "",
     "x": 460,
     "y": 800,
@@ -2054,7 +2054,7 @@
     "method": "GET",
     "ret": "txt",
     "paytoqs": "ignore",
-    "url": "http://${JWT_SVC_HOST}:${JWT_SVC_PORT}/api/auth/me",
+    "url": "http://jwt-service:3000/api/auth/me",
     "tls": "",
     "persist": false,
     "proxy": "",
@@ -2621,7 +2621,7 @@
     "props": [
       {
         "p": "payload",
-        "v": "run -e API_BASE=http://${TXN_SVC_HOST}:${TXN_SVC_PORT} -e AUTH_URL=http://${JWT_SVC_HOST}:${JWT_SVC_PORT}/api/auth/login /project/tests/performance/transaction-api-smoke.js",
+        "v": "run -e API_BASE=http://transaction-api-service:4000 -e AUTH_URL=http://jwt-service:3000/api/auth/login /project/tests/performance/transaction-api-smoke.js",
         "vt": "str"
       }
     ],
@@ -2647,7 +2647,7 @@
     "props": [
       {
         "p": "payload",
-        "v": "run -e API_BASE=http://${TXN_SVC_HOST}:${TXN_SVC_PORT} -e AUTH_URL=http://${JWT_SVC_HOST}:${JWT_SVC_PORT}/api/auth/login /project/tests/performance/transaction-api-load.js",
+        "v": "run -e API_BASE=http://transaction-api-service:4000 -e AUTH_URL=http://jwt-service:3000/api/auth/login /project/tests/performance/transaction-api-load.js",
         "vt": "str"
       }
     ],
@@ -2673,7 +2673,7 @@
     "props": [
       {
         "p": "payload",
-        "v": "run -e API_BASE=http://${TXN_SVC_HOST}:${TXN_SVC_PORT} -e AUTH_URL=http://${JWT_SVC_HOST}:${JWT_SVC_PORT}/api/auth/login /project/tests/performance/transaction-api-stress.js",
+        "v": "run -e API_BASE=http://transaction-api-service:4000 -e AUTH_URL=http://jwt-service:3000/api/auth/login /project/tests/performance/transaction-api-stress.js",
         "vt": "str"
       }
     ],
@@ -2699,7 +2699,7 @@
     "props": [
       {
         "p": "payload",
-        "v": "run -e API_BASE=http://${USER_SVC_HOST}:${USER_SVC_PORT} /project/tests/performance/user-service-smoke.js",
+        "v": "run -e API_BASE=http://user-service:3100 /project/tests/performance/user-service-smoke.js",
         "vt": "str"
       }
     ],
@@ -2725,7 +2725,7 @@
     "props": [
       {
         "p": "payload",
-        "v": "run -e API_BASE=http://${USER_SVC_HOST}:${USER_SVC_PORT} /project/tests/performance/user-service-load.js",
+        "v": "run -e API_BASE=http://user-service:3100 /project/tests/performance/user-service-load.js",
         "vt": "str"
       }
     ],
@@ -2840,7 +2840,7 @@
     "props": [
       {
         "p": "payload",
-        "v": "--test --variable auth_base=http://${JWT_SVC_HOST}:${JWT_SVC_PORT} --variable auth_url=http://${JWT_SVC_HOST}:${JWT_SVC_PORT}/api/auth/login --variable base_url=http://${TXN_SVC_HOST}:${TXN_SVC_PORT} --file-root /project /project/tests/regression/transaction-api-service-tests/run-all.hurl",
+        "v": "--test --variable auth_base=http://jwt-service:3000 --variable auth_url=http://jwt-service:3000/api/auth/login --variable base_url=http://transaction-api-service:4000 --file-root /project /project/tests/regression/transaction-api-service-tests/run-all.hurl",
         "vt": "str"
       }
     ],
@@ -2866,7 +2866,7 @@
     "props": [
       {
         "p": "payload",
-        "v": "--test --variable base_url=http://${USER_SVC_HOST}:${USER_SVC_PORT} --file-root /project /project/tests/regression/user-service-tests/run-all.hurl",
+        "v": "--test --variable base_url=http://user-service:3100 --file-root /project /project/tests/regression/user-service-tests/run-all.hurl",
         "vt": "str"
       }
     ],
