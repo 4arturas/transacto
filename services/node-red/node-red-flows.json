@@ -7,10 +7,38 @@
     "info": "Connectivity tests for core infrastructure components.\n\n- Kafka: consumes raw-transactions topic (broker at kafka:9092)\n- PostgreSQL TXN: transaction_processor DB (postgres/postgres@txn-db:5432)\n- PostgreSQL JWT: jwt_service DB (jwt_service/jwt_service003@jwt-db:5432)\n\nClick inject buttons to verify connections and see live counts."
   },
   {
+    "id": "t-linkin-infra",
+    "type": "link in",
+    "z": "344a5ec8f258a2cd",
+    "name": "infra-in",
+    "links": [
+      "t-linkout-infra"
+    ],
+    "x": 75,
+    "y": 20,
+    "wires": [
+      []
+    ]
+  },
+  {
     "id": "25cfada78ca47aaa",
     "type": "tab",
     "label": "Performance Tests",
     "disabled": false
+  },
+  {
+    "id": "t-linkin-perf",
+    "type": "link in",
+    "z": "25cfada78ca47aaa",
+    "name": "perf-in",
+    "links": [
+      "t-linkout-perf"
+    ],
+    "x": 75,
+    "y": 20,
+    "wires": [
+      []
+    ]
   },
   {
     "id": "tab-regression",
@@ -19,10 +47,38 @@
     "disabled": false
   },
   {
+    "id": "t-linkin-regression",
+    "type": "link in",
+    "z": "tab-regression",
+    "name": "regression-in",
+    "links": [
+      "t-linkout-regression"
+    ],
+    "x": 75,
+    "y": 20,
+    "wires": [
+      []
+    ]
+  },
+  {
     "id": "tab-txn-tests",
     "type": "tab",
     "label": "Transaction API Tests",
     "disabled": false
+  },
+  {
+    "id": "t-linkin-txn-tests",
+    "type": "link in",
+    "z": "tab-txn-tests",
+    "name": "txn-tests-in",
+    "links": [
+      "t-linkout-txn-tests"
+    ],
+    "x": 75,
+    "y": 20,
+    "wires": [
+      []
+    ]
   },
   {
     "id": "57559df197484502",
@@ -32,6 +88,20 @@
     "info": "JWT-based authentication API for login, registration, and token verification. Proxies to the jwt-service at port 3000."
   },
   {
+    "id": "t-linkin-jwt",
+    "type": "link in",
+    "z": "57559df197484502",
+    "name": "jwt-auth-in",
+    "links": [
+      "t-linkout-jwt"
+    ],
+    "x": 75,
+    "y": 60,
+    "wires": [
+      []
+    ]
+  },
+  {
     "id": "6e879028e49f88a2",
     "type": "tab",
     "label": "Transaction API Prototype",
@@ -39,11 +109,25 @@
     "info": "Prototype REST API for transactions and accounts backed by PostgreSQL. Endpoints: /health, /api/stats, /api/transactions, /api/transactions/:id, /api/accounts, /api/accounts/:accountId. Authenticated via JWT."
   },
   {
+    "id": "t-linkin-txn-proto",
+    "type": "link in",
+    "z": "6e879028e49f88a2",
+    "name": "txn-proto-in",
+    "links": [
+      "t-linkout-txn-proto"
+    ],
+    "x": 75,
+    "y": 60,
+    "wires": [
+      []
+    ]
+  },
+  {
     "id": "c203cc42e86554dd",
     "type": "tab",
     "label": "Transacto",
     "disabled": false,
-    "info": "Birds-eye view dashboard for the complete microservices system.\n\nServices:\n- User Service (3100) - user CRUD operations\n- JWT Auth (3000) - authentication and token management\n- Transaction API (4000) - account and transaction queries\n- Kafka (9092) - event streaming (raw-transactions topic)\n- PostgreSQL - jwt_service and transaction_processor databases\n\nClick inject buttons in each group to run health checks and key operations.",
+    "info": "Birds-eye view dashboard for the complete microservices system.\n\nServices:\n- User Service (3100) - user CRUD operations\n- JWT Auth (3000) - authentication and token management\n- Transaction API (4000) - account and transaction queries\n- Kafka (9092) - event streaming (raw-transactions topic)\n- PostgreSQL - jwt_service and transaction_processor databases\n\nInject buttons: Health checks for each service + Check All.\nLink nodes: quick navigation to each flow tab.",
     "env": []
   },
   {
@@ -57,96 +141,32 @@
     "nodes": [
       "t-inj-user-health",
       "t-http-user-health",
-      "t-debug-user-health",
-      "t-inj-user-login",
-      "t-http-user-login",
-      "t-debug-user-login"
+      "t-debug-user-health"
     ],
-    "x": 30,
-    "y": 60,
-    "w": 460,
-    "h": 300
-  },
-  {
-    "id": "g-transacto-jwt",
-    "type": "group",
-    "z": "c203cc42e86554dd",
-    "name": "JWT Auth (3000)",
-    "style": {
-      "label": true
-    },
-    "nodes": [
-      "t-inj-jwt-health",
-      "t-http-jwt-health",
-      "t-debug-jwt-health",
-      "t-inj-jwt-login",
-      "t-http-jwt-login",
-      "t-debug-jwt-login"
-    ],
-    "x": 540,
-    "y": 60,
-    "w": 460,
-    "h": 300
-  },
-  {
-    "id": "g-transacto-txn",
-    "type": "group",
-    "z": "c203cc42e86554dd",
-    "name": "Transaction API (4000)",
-    "style": {
-      "label": true
-    },
-    "nodes": [
-      "t-inj-txn-health",
-      "t-http-txn-health",
-      "t-debug-txn-health",
-      "t-inj-txn-stats",
-      "t-http-txn-stats",
-      "t-debug-txn-stats"
-    ],
-    "x": 1050,
-    "y": 60,
-    "w": 460,
-    "h": 300
-  },
-  {
-    "id": "g-transacto-overview",
-    "type": "group",
-    "z": "c203cc42e86554dd",
-    "name": "System Overview",
-    "style": {
-      "label": true
-    },
-    "nodes": [
-      "t-inj-checkall"
-    ],
-    "x": 30,
-    "y": 410,
-    "w": 1480,
-    "h": 180
+    "x": 834,
+    "y": 559,
+    "w": 552,
+    "h": 82
   },
   {
     "id": "t-inj-user-health",
     "type": "inject",
     "z": "c203cc42e86554dd",
     "g": "g-transacto-user",
-    "name": "▶ Health",
+    "name": "Health",
     "props": [
       {
         "p": "topic",
-        "vt": "str",
-        "v": "health-user"
+        "vt": "str"
       }
     ],
     "repeat": "",
     "crontab": "",
     "once": false,
     "onceDelay": 0.1,
-    "topic": "",
-    "payload": "",
-    "payloadType": "date",
-    "x": 80,
-    "y": 120,
+    "topic": "health-user",
+    "x": 930,
+    "y": 600,
     "wires": [
       [
         "t-http-user-health"
@@ -163,8 +183,8 @@
     "ret": "obj",
     "url": "http://user-service:3100/health",
     "tls": "",
-    "x": 260,
-    "y": 120,
+    "x": 1130,
+    "y": 600,
     "wires": [
       [
         "t-debug-user-health"
@@ -176,7 +196,7 @@
     "type": "debug",
     "z": "c203cc42e86554dd",
     "g": "g-transacto-user",
-    "name": "Health: user-service",
+    "name": "Health",
     "active": true,
     "tosidebar": true,
     "console": false,
@@ -185,96 +205,47 @@
     "targetType": "msg",
     "statusVal": "",
     "statusType": "auto",
-    "x": 440,
-    "y": 120,
+    "x": 1290,
+    "y": 600,
     "wires": []
   },
   {
-    "id": "t-inj-user-login",
-    "type": "inject",
+    "id": "g-transacto-jwt",
+    "type": "group",
     "z": "c203cc42e86554dd",
-    "g": "g-transacto-user",
-    "name": "▶ Login",
-    "props": [
-      {
-        "p": "topic",
-        "vt": "str",
-        "v": "login-user"
-      }
+    "name": "JWT Auth (3000)",
+    "style": {
+      "label": true
+    },
+    "nodes": [
+      "t-inj-jwt-health",
+      "t-http-jwt-health",
+      "t-debug-jwt-health"
     ],
-    "repeat": "",
-    "crontab": "",
-    "once": false,
-    "onceDelay": 0.1,
-    "topic": "",
-    "payload": "",
-    "payloadType": "date",
-    "x": 80,
-    "y": 220,
-    "wires": [
-      [
-        "t-http-user-login"
-      ]
-    ]
-  },
-  {
-    "id": "t-http-user-login",
-    "type": "http request",
-    "z": "c203cc42e86554dd",
-    "g": "g-transacto-user",
-    "name": "POST /api/login",
-    "method": "POST",
-    "ret": "obj",
-    "url": "http://user-service:3100/api/login",
-    "tls": "",
-    "x": 260,
-    "y": 220,
-    "wires": [
-      [
-        "t-debug-user-login"
-      ]
-    ]
-  },
-  {
-    "id": "t-debug-user-login",
-    "type": "debug",
-    "z": "c203cc42e86554dd",
-    "g": "g-transacto-user",
-    "name": "Login: user-service",
-    "active": true,
-    "tosidebar": true,
-    "console": false,
-    "tostatus": false,
-    "complete": "payload",
-    "targetType": "msg",
-    "statusVal": "",
-    "statusType": "auto",
-    "x": 440,
-    "y": 220,
-    "wires": []
+    "x": 834,
+    "y": 319,
+    "w": 552,
+    "h": 82
   },
   {
     "id": "t-inj-jwt-health",
     "type": "inject",
     "z": "c203cc42e86554dd",
     "g": "g-transacto-jwt",
-    "name": "▶ Health",
+    "name": "Health",
     "props": [
       {
         "p": "topic",
-        "vt": "str",
-        "v": "health-jwt"
+        "vt": "str"
       }
     ],
     "repeat": "",
     "crontab": "",
     "once": false,
     "onceDelay": 0.1,
-    "topic": "",
-    "payload": "",
-    "payloadType": "date",
-    "x": 590,
-    "y": 120,
+    "topic": "health-jwt",
+    "x": 930,
+    "y": 360,
     "wires": [
       [
         "t-http-jwt-health"
@@ -291,8 +262,8 @@
     "ret": "obj",
     "url": "http://jwt-service:3000/health",
     "tls": "",
-    "x": 770,
-    "y": 120,
+    "x": 1130,
+    "y": 360,
     "wires": [
       [
         "t-debug-jwt-health"
@@ -304,7 +275,7 @@
     "type": "debug",
     "z": "c203cc42e86554dd",
     "g": "g-transacto-jwt",
-    "name": "Health: jwt-auth",
+    "name": "Health",
     "active": true,
     "tosidebar": true,
     "console": false,
@@ -313,96 +284,47 @@
     "targetType": "msg",
     "statusVal": "",
     "statusType": "auto",
-    "x": 950,
-    "y": 120,
+    "x": 1290,
+    "y": 360,
     "wires": []
   },
   {
-    "id": "t-inj-jwt-login",
-    "type": "inject",
+    "id": "g-transacto-txn",
+    "type": "group",
     "z": "c203cc42e86554dd",
-    "g": "g-transacto-jwt",
-    "name": "▶ Login",
-    "props": [
-      {
-        "p": "topic",
-        "vt": "str",
-        "v": "login-jwt"
-      }
+    "name": "Transaction API (4000)",
+    "style": {
+      "label": true
+    },
+    "nodes": [
+      "t-inj-txn-health",
+      "t-http-txn-health",
+      "t-debug-txn-health"
     ],
-    "repeat": "",
-    "crontab": "",
-    "once": false,
-    "onceDelay": 0.1,
-    "topic": "",
-    "payload": "",
-    "payloadType": "date",
-    "x": 590,
-    "y": 220,
-    "wires": [
-      [
-        "t-http-jwt-login"
-      ]
-    ]
-  },
-  {
-    "id": "t-http-jwt-login",
-    "type": "http request",
-    "z": "c203cc42e86554dd",
-    "g": "g-transacto-jwt",
-    "name": "POST /api/auth/login",
-    "method": "POST",
-    "ret": "obj",
-    "url": "http://jwt-service:3000/api/auth/login",
-    "tls": "",
-    "x": 770,
-    "y": 220,
-    "wires": [
-      [
-        "t-debug-jwt-login"
-      ]
-    ]
-  },
-  {
-    "id": "t-debug-jwt-login",
-    "type": "debug",
-    "z": "c203cc42e86554dd",
-    "g": "g-transacto-jwt",
-    "name": "Login: jwt-auth",
-    "active": true,
-    "tosidebar": true,
-    "console": false,
-    "tostatus": false,
-    "complete": "payload",
-    "targetType": "msg",
-    "statusVal": "",
-    "statusType": "auto",
-    "x": 950,
-    "y": 220,
-    "wires": []
+    "x": 834,
+    "y": 439,
+    "w": 552,
+    "h": 82
   },
   {
     "id": "t-inj-txn-health",
     "type": "inject",
     "z": "c203cc42e86554dd",
     "g": "g-transacto-txn",
-    "name": "▶ Health",
+    "name": "Health",
     "props": [
       {
         "p": "topic",
-        "vt": "str",
-        "v": "health-txn"
+        "vt": "str"
       }
     ],
     "repeat": "",
     "crontab": "",
     "once": false,
     "onceDelay": 0.1,
-    "topic": "",
-    "payload": "",
-    "payloadType": "date",
-    "x": 1100,
-    "y": 120,
+    "topic": "health-txn",
+    "x": 930,
+    "y": 480,
     "wires": [
       [
         "t-http-txn-health"
@@ -419,8 +341,8 @@
     "ret": "obj",
     "url": "http://transaction-api-service:4000/health",
     "tls": "",
-    "x": 1280,
-    "y": 120,
+    "x": 1130,
+    "y": 480,
     "wires": [
       [
         "t-debug-txn-health"
@@ -432,7 +354,7 @@
     "type": "debug",
     "z": "c203cc42e86554dd",
     "g": "g-transacto-txn",
-    "name": "Health: txn-api",
+    "name": "Health",
     "active": true,
     "tosidebar": true,
     "console": false,
@@ -441,96 +363,45 @@
     "targetType": "msg",
     "statusVal": "",
     "statusType": "auto",
-    "x": 1460,
-    "y": 120,
+    "x": 1290,
+    "y": 480,
     "wires": []
   },
   {
-    "id": "t-inj-txn-stats",
-    "type": "inject",
+    "id": "g-transacto-overview",
+    "type": "group",
     "z": "c203cc42e86554dd",
-    "g": "g-transacto-txn",
-    "name": "▶ Stats",
-    "props": [
-      {
-        "p": "topic",
-        "vt": "str",
-        "v": "stats-txn"
-      }
+    "name": "System Overview",
+    "style": {
+      "label": true
+    },
+    "nodes": [
+      "t-inj-checkall"
     ],
-    "repeat": "",
-    "crontab": "",
-    "once": false,
-    "onceDelay": 0.1,
-    "topic": "",
-    "payload": "",
-    "payloadType": "date",
-    "x": 1100,
-    "y": 220,
-    "wires": [
-      [
-        "t-http-txn-stats"
-      ]
-    ]
-  },
-  {
-    "id": "t-http-txn-stats",
-    "type": "http request",
-    "z": "c203cc42e86554dd",
-    "g": "g-transacto-txn",
-    "name": "GET /api/stats",
-    "method": "GET",
-    "ret": "obj",
-    "url": "http://transaction-api-service:4000/api/stats",
-    "tls": "",
-    "x": 1280,
-    "y": 220,
-    "wires": [
-      [
-        "t-debug-txn-stats"
-      ]
-    ]
-  },
-  {
-    "id": "t-debug-txn-stats",
-    "type": "debug",
-    "z": "c203cc42e86554dd",
-    "g": "g-transacto-txn",
-    "name": "Stats: txn-api",
-    "active": true,
-    "tosidebar": true,
-    "console": false,
-    "tostatus": false,
-    "complete": "payload",
-    "targetType": "msg",
-    "statusVal": "",
-    "statusType": "auto",
-    "x": 1460,
-    "y": 220,
-    "wires": []
+    "x": 254,
+    "y": 439,
+    "w": 292,
+    "h": 82
   },
   {
     "id": "t-inj-checkall",
     "type": "inject",
     "z": "c203cc42e86554dd",
     "g": "g-transacto-overview",
-    "name": "▶ Check All Health Endpoints",
+    "name": "Check All Health Endpoints",
     "props": [
       {
         "p": "topic",
-        "vt": "str",
-        "v": "checkall"
+        "vt": "str"
       }
     ],
     "repeat": "",
     "crontab": "",
     "once": false,
     "onceDelay": 0.1,
-    "topic": "",
-    "payload": "",
-    "payloadType": "date",
-    "x": 80,
-    "y": 490,
+    "topic": "checkall",
+    "x": 410,
+    "y": 480,
     "wires": [
       [
         "t-http-user-health",
@@ -538,6 +409,126 @@
         "t-http-txn-health"
       ]
     ]
+  },
+  {
+    "id": "g-transacto-nav",
+    "type": "group",
+    "z": "c203cc42e86554dd",
+    "name": "Navigation",
+    "style": {
+      "label": true
+    },
+    "nodes": [
+      "t-linkout-user",
+      "t-linkout-jwt",
+      "t-linkout-txn-proto",
+      "t-linkout-infra",
+      "t-linkout-perf",
+      "t-linkout-regression",
+      "t-linkout-txn-tests"
+    ],
+    "x": 254,
+    "y": 319,
+    "w": 292,
+    "h": 102
+  },
+  {
+    "id": "t-linkout-user",
+    "type": "link out",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-nav",
+    "name": "→ User Service",
+    "mode": "link",
+    "links": [
+      "t-linkin-user-svc"
+    ],
+    "x": 410,
+    "y": 340,
+    "wires": []
+  },
+  {
+    "id": "t-linkout-jwt",
+    "type": "link out",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-nav",
+    "name": "→ JWT Auth API",
+    "mode": "link",
+    "links": [
+      "t-linkin-jwt"
+    ],
+    "x": 410,
+    "y": 360,
+    "wires": []
+  },
+  {
+    "id": "t-linkout-txn-proto",
+    "type": "link out",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-nav",
+    "name": "→ Transaction API Prototype",
+    "mode": "link",
+    "links": [
+      "t-linkin-txn-proto"
+    ],
+    "x": 410,
+    "y": 380,
+    "wires": []
+  },
+  {
+    "id": "t-linkout-infra",
+    "type": "link out",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-nav",
+    "name": "→ Infrastructure",
+    "mode": "link",
+    "links": [
+      "t-linkin-infra"
+    ],
+    "x": 410,
+    "y": 400,
+    "wires": []
+  },
+  {
+    "id": "t-linkout-perf",
+    "type": "link out",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-nav",
+    "name": "→ Performance Tests",
+    "mode": "link",
+    "links": [
+      "t-linkin-perf"
+    ],
+    "x": 410,
+    "y": 420,
+    "wires": []
+  },
+  {
+    "id": "t-linkout-regression",
+    "type": "link out",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-nav",
+    "name": "→ Regression Tests",
+    "mode": "link",
+    "links": [
+      "t-linkin-regression"
+    ],
+    "x": 410,
+    "y": 440,
+    "wires": []
+  },
+  {
+    "id": "t-linkout-txn-tests",
+    "type": "link out",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-nav",
+    "name": "→ Transaction API Tests",
+    "mode": "link",
+    "links": [
+      "t-linkin-txn-tests"
+    ],
+    "x": 410,
+    "y": 460,
+    "wires": []
   },
   {
     "id": "b2795fdf0aa3b698",
@@ -2212,7 +2203,8 @@
     "z": "57559df197484502",
     "name": "jwt-auth-api-in",
     "links": [
-      "255d1c72389ec6ce"
+      "255d1c72389ec6ce",
+      "t-linkout-jwt"
     ],
     "x": 105,
     "y": 40,
@@ -2826,7 +2818,8 @@
     "z": "6e879028e49f88a2",
     "name": "transaction-api-prototype-in",
     "links": [
-      "fde47446784c999f"
+      "fde47446784c999f",
+      "t-linkout-txn-proto"
     ],
     "x": 75,
     "y": 20,
@@ -2849,6 +2842,20 @@
     "id": "tab-user-svc",
     "type": "tab",
     "disabled": false
+  },
+  {
+    "id": "t-linkin-user-svc",
+    "type": "link in",
+    "z": "tab-user-svc",
+    "name": "user-service-in",
+    "links": [
+      "t-linkout-user"
+    ],
+    "x": 75,
+    "y": 20,
+    "wires": [
+      []
+    ]
   },
   {
     "style": {

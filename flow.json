@@ -1,0 +1,282 @@
+[
+  {
+    "id": "g-transacto-user",
+    "type": "group",
+    "z": "c203cc42e86554dd",
+    "name": "User Service (3100)",
+    "style": {
+      "label": true
+    },
+    "nodes": [
+      "t-inj-user-health",
+      "t-http-user-health",
+      "t-debug-user-health"
+    ],
+    "x": 834,
+    "y": 559,
+    "w": 552,
+    "h": 82
+  },
+  {
+    "id": "t-inj-user-health",
+    "type": "inject",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-user",
+    "name": "Health",
+    "props": [
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "health-user",
+    "x": 930,
+    "y": 600,
+    "wires": [
+      [
+        "t-http-user-health"
+      ]
+    ]
+  },
+  {
+    "id": "t-http-user-health",
+    "type": "http request",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-user",
+    "name": "GET /health",
+    "method": "GET",
+    "ret": "obj",
+    "url": "http://user-service:3100/health",
+    "tls": "",
+    "x": 1130,
+    "y": 600,
+    "wires": [
+      [
+        "t-debug-user-health"
+      ]
+    ]
+  },
+  {
+    "id": "t-debug-user-health",
+    "type": "debug",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-user",
+    "name": "Health",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 1290,
+    "y": 600,
+    "wires": []
+  },
+  {
+    "id": "g-transacto-jwt",
+    "type": "group",
+    "z": "c203cc42e86554dd",
+    "name": "JWT Auth (3000)",
+    "style": {
+      "label": true
+    },
+    "nodes": [
+      "t-inj-jwt-health",
+      "t-http-jwt-health",
+      "t-debug-jwt-health"
+    ],
+    "x": 834,
+    "y": 319,
+    "w": 552,
+    "h": 82
+  },
+  {
+    "id": "t-inj-jwt-health",
+    "type": "inject",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-jwt",
+    "name": "Health",
+    "props": [
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "health-jwt",
+    "x": 930,
+    "y": 360,
+    "wires": [
+      [
+        "t-http-jwt-health"
+      ]
+    ]
+  },
+  {
+    "id": "t-http-jwt-health",
+    "type": "http request",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-jwt",
+    "name": "GET /health",
+    "method": "GET",
+    "ret": "obj",
+    "url": "http://jwt-service:3000/health",
+    "tls": "",
+    "x": 1130,
+    "y": 360,
+    "wires": [
+      [
+        "t-debug-jwt-health"
+      ]
+    ]
+  },
+  {
+    "id": "t-debug-jwt-health",
+    "type": "debug",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-jwt",
+    "name": "Health",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 1290,
+    "y": 360,
+    "wires": []
+  },
+  {
+    "id": "g-transacto-txn",
+    "type": "group",
+    "z": "c203cc42e86554dd",
+    "name": "Transaction API (4000)",
+    "style": {
+      "label": true
+    },
+    "nodes": [
+      "t-inj-txn-health",
+      "t-http-txn-health",
+      "t-debug-txn-health"
+    ],
+    "x": 834,
+    "y": 439,
+    "w": 552,
+    "h": 82
+  },
+  {
+    "id": "t-inj-txn-health",
+    "type": "inject",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-txn",
+    "name": "Health",
+    "props": [
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "health-txn",
+    "x": 930,
+    "y": 480,
+    "wires": [
+      [
+        "t-http-txn-health"
+      ]
+    ]
+  },
+  {
+    "id": "t-http-txn-health",
+    "type": "http request",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-txn",
+    "name": "GET /health",
+    "method": "GET",
+    "ret": "obj",
+    "url": "http://transaction-api-service:4000/health",
+    "tls": "",
+    "x": 1130,
+    "y": 480,
+    "wires": [
+      [
+        "t-debug-txn-health"
+      ]
+    ]
+  },
+  {
+    "id": "t-debug-txn-health",
+    "type": "debug",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-txn",
+    "name": "Health",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 1290,
+    "y": 480,
+    "wires": []
+  },
+  {
+    "id": "g-transacto-overview",
+    "type": "group",
+    "z": "c203cc42e86554dd",
+    "name": "System Overview",
+    "style": {
+      "label": true
+    },
+    "nodes": [
+      "t-inj-checkall"
+    ],
+    "x": 254,
+    "y": 439,
+    "w": 292,
+    "h": 82
+  },
+  {
+    "id": "t-inj-checkall",
+    "type": "inject",
+    "z": "c203cc42e86554dd",
+    "g": "g-transacto-overview",
+    "name": "Check All Health Endpoints",
+    "props": [
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "checkall",
+    "x": 410,
+    "y": 480,
+    "wires": [
+      [
+        "t-http-user-health",
+        "t-http-jwt-health",
+        "t-http-txn-health"
+      ]
+    ]
+  }
+]
