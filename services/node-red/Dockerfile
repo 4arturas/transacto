@@ -14,7 +14,7 @@ RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/reposi
 USER node-red
 
 COPY services/node-red/node-red-flows.json /default-flows.json
-COPY node-red/entrypoint.sh /custom-entrypoint.sh
+COPY services/node-red/entrypoint.sh /custom-entrypoint.sh
 USER root
 RUN chmod +x /custom-entrypoint.sh && chown node-red:node-red /custom-entrypoint.sh
 USER node-red
