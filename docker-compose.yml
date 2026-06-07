@@ -1,0 +1,173 @@
+services:
+  # ── Kafka (KRaft mode, no Zookeeper) ──────────────────────────
+  kafka:
+    image: apache/kafka:latest
+    container_name: kafka
+    restart: unless-stopped
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── JWT Service Database ──────────────────────────────────────
+  jwt-db:
+    image: postgres:12
+    container_name: jwt-service-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: jwt_service
+      POSTGRES_PASSWORD: jwt_service003
+      POSTGRES_DB: jwt_service
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jwt_service -d jwt_service"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ── Transaction Processor Database ────────────────────────────
+  txn-db:
+    image: postgres:12
+    container_name: transaction-processor-postgres
+    restart: unless-stopped
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: transaction_processor
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d transaction_processor"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ── JWT Service ───────────────────────────────────────────────
+  jwt-service:
+    build:
+      context: ./services/jwt-service
+      dockerfile: Dockerfile
+    container_name: jwt-service
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      DATABASE_URL: postgres://jwt_service:jwt_service003@jwt-db:5432/jwt_service
+      JWT_SECRET: dev-jwt-secret
+      REFRESH_SECRET: dev-refresh-secret
+      ACCESS_TOKEN_EXPIRES_IN: 15m
+      REFRESH_TOKEN_EXPIRES_IN: 7d
+      COOKIE_SECURE: "false"
+      COOKIE_SAMESITE: lax
+    depends_on:
+      jwt-db:
+        condition: service_healthy
+
+  # ── Data Stream Service (Kafka Producer) ──────────────────────
+  data-stream-service:
+    build:
+      context: ./services/data-stream-service
+      dockerfile: Dockerfile
+    container_name: data-stream-service
+    restart: unless-stopped
+    environment:
+      KAFKA_BROKERS: kafka:9092
+      KAFKA_CLIENT_ID: data-stream-simulator
+      KAFKA_TOPIC: raw-transactions
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+  # ── Transaction Processor Service (Kafka Consumer) ────────────
+  transaction-processor-service:
+    build:
+      context: ./services/transaction-processor-service
+      dockerfile: Dockerfile
+    container_name: transaction-processor-service
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@txn-db:5432/transaction_processor
+      KAFKA_BROKERS: kafka:9092
+      KAFKA_CLIENT_ID: transaction-processor-service
+      KAFKA_GROUP_ID: transaction-processor-group
+      KAFKA_TOPIC: raw-transactions
+    depends_on:
+      kafka:
+        condition: service_healthy
+      txn-db:
+        condition: service_healthy
+
+  # ── Transaction API Service ─────────────────────────────────────
+  transaction-api-service:
+    build:
+      context: ./services/transaction-api-service
+      dockerfile: Dockerfile
+    container_name: transaction-api-service
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      PORT: 4000
+      DATABASE_URL: postgres://postgres:postgres@txn-db:5432/transaction_processor
+      JWT_SECRET: dev-jwt-secret
+      JWT_SERVICE_URL: http://jwt-service:3000
+    depends_on:
+      txn-db:
+        condition: service_healthy
+
+  # ── User Service (Admin & Permissions) ─────────────────────────
+  user-service:
+    build:
+      context: ./services/user-service
+      dockerfile: Dockerfile
+    container_name: user-service
+    restart: unless-stopped
+    ports:
+      - "3100:3100"
+    environment:
+      PORT: 3100
+      DATABASE_URL: postgres://jwt_service:jwt_service003@jwt-db:5432/jwt_service
+      JWT_SECRET: dev-jwt-secret
+      JWT_SERVICE_URL: http://jwt-service:3000
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: admin123
+    depends_on:
+      jwt-db:
+        condition: service_healthy
+
+  # ── Node-RED ───────────────────────────────────────────────────
+  node-red:
+    build:
+      context: .
+      dockerfile: ./services/node-red/Dockerfile
+    container_name: node-red
+    restart: unless-stopped
+    ports:
+      - "1880:1880"
+    environment:
+      TZ: Europe/Copenhagen
+    volumes:
+      - node-red-data:/data
+      - .:/project
+
+volumes:
+  node-red-data:
+
+

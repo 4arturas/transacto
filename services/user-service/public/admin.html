@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Transacto Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/antd/5.27.4/reset.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/antd/5.27.4/antd.min.js"></script>
+    <style>
+        :root {
+            --primary: #0057b3;
+            --primary-light: #e6f0fa;
+        }
+        body { margin: 0; background: #f0f2f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        .login-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0057b3 0%, #003d7a 100%); }
+        .login-container { width: 400px; padding: 0 20px; }
+        .login-card { border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.15); }
+        .login-brand { text-align: center; margin-bottom: 32px; }
+        .login-brand .logo { font-size: 28px; font-weight: 700; color: var(--primary); letter-spacing: -0.5px; }
+        .login-brand .logo span { color: #ff6b35; }
+        .login-brand .tagline { font-size: 13px; color: #888; margin-top: 4px; }
+        .topbar { background: #fff; border-bottom: 1px solid #e8e8e8; padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 4px rgba(0,0,0,0.04); position: sticky; top: 0; z-index: 100; }
+        .topbar .logo { font-size: 20px; font-weight: 700; color: var(--primary); letter-spacing: -0.3px; }
+        .topbar .logo span { color: #ff6b35; }
+        .topbar .user-info { display: flex; align-items: center; gap: 12px; color: #555; font-size: 14px; }
+        .content-wrap { max-width: 1200px; margin: 0 auto; padding: 24px; }
+        .role-tag-admin { color: #cf1322; background: #fff1f0; border-color: #ffa39e; font-weight: 500; }
+        .role-tag-user { color: #389e0d; background: #f6ffed; border-color: #b7eb8f; font-weight: 500; }
+    </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+    const { useState, useEffect, useCallback } = React;
+    const { Card, Form, Input, Button, Table, Tag, Tabs, message, Modal, Select, Spin, Result, Descriptions, Popconfirm, Space, Typography, Avatar } = antd;
+
+    const tokenKey = "user_admin_token";
+    const userKey = "user_admin_user";
+
+    function getStoredToken() { return localStorage.getItem(tokenKey); }
+    function getStoredUser() { try { return JSON.parse(localStorage.getItem(userKey) || "null"); } catch { return null; } }
+
+    async function api(path, options = {}) {
+        const token = getStoredToken();
+        const headers = { "Content-Type": "application/json", ...options.headers };
+        if (token) headers["Authorization"] = "Bearer " + token;
+        const res = await fetch(path, { ...options, headers });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Request failed");
+        return data;
+    }
+
+    function LoginForm({ onLogin }) {
+        const [loading, setLoading] = useState(false);
+        const [form] = Form.useForm();
+        const handleSubmit = async (values) => {
+            setLoading(true);
+            try {
+                const data = await api("/api/login", {
+                    method: "POST",
+                    body: JSON.stringify(values),
+                });
+                localStorage.setItem(tokenKey, data.accessToken);
+                localStorage.setItem(userKey, JSON.stringify(data.user));
+                message.success("Logged in as " + data.user.email);
+                onLogin(data);
+            } catch (err) {
+                message.error(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        return (
+            <div className="login-page">
+                <div className="login-container">
+                    <Card className="login-card">
+                        <div className="login-brand">
+                            <div className="logo">Transact<span>o</span></div>
+                            <div className="tagline">Payment Processing Platform</div>
+                        </div>
+                        <Form form={form} layout="vertical" onFinish={handleSubmit} autoComplete="off">
+                            <Form.Item label="Email" name="email" rules={[{ required: true, message: "Enter your email" }]}>
+                                <Input placeholder="admin@example.com" size="large"/>
+                            </Form.Item>
+                            <Form.Item label="Password" name="password" rules={[{ required: true, message: "Enter your password" }]}>
+                                <Input.Password placeholder="password" size="large"/>
+                            </Form.Item>
+                            <Form.Item>
+                                <Button type="primary" htmlType="submit" block size="large" loading={loading} style={{ height: 44, borderRadius: 8, background: "#0057b3", borderColor: "#0057b3" }}>Sign In</Button>
+                            </Form.Item>
+                        </Form>
+                    </Card>
+                </div>
+            </div>
+        );
+    }
+
+    function UserList({ onError }) {
+        const [users, setUsers] = useState([]);
+        const [total, setTotal] = useState(0);
+        const [page, setPage] = useState(1);
+        const [loading, setLoading] = useState(false);
+        const [pageSize] = useState(20);
+        const [roleChanging, setRoleChanging] = useState(null);
+        const [deleting, setDeleting] = useState(null);
+        const [createOpen, setCreateOpen] = useState(false);
+        const [creating, setCreating] = useState(false);
+        const [createForm] = Form.useForm();
+
+        const fetchUsers = useCallback(async (p) => {
+            setLoading(true);
+            try {
+                const data = await api("/api/users?page=" + p + "&limit=" + pageSize);
+                setUsers(data.data);
+                setTotal(data.pagination.total);
+            } catch (err) {
+                message.error(err.message);
+                if (onError) onError(err);
+            } finally {
+                setLoading(false);
+            }
+        }, [pageSize, onError]);
+
+        useEffect(() => { fetchUsers(page); }, [page, fetchUsers]);
+
+        const handleRoleChange = async (userId, newRole) => {
+            setRoleChanging(userId);
+            try {
+                await api("/api/users/" + userId + "/role", {
+                    method: "PUT",
+                    body: JSON.stringify({ role: newRole }),
+                });
+                message.success("Role updated");
+                fetchUsers(page);
+            } catch (err) {
+                message.error(err.message);
+            } finally {
+                setRoleChanging(null);
+            }
+        };
+
+        const handleDelete = async (userId) => {
+            setDeleting(userId);
+            try {
+                await api("/api/users/" + userId, { method: "DELETE" });
+                message.success("User deleted");
+                fetchUsers(page);
+            } catch (err) {
+                message.error(err.message);
+            } finally {
+                setDeleting(null);
+            }
+        };
+
+        const handleCreate = async (values) => {
+            setCreating(true);
+            try {
+                await api("/api/users", {
+                    method: "POST",
+                    body: JSON.stringify(values),
+                });
+                message.success("User created");
+                setCreateOpen(false);
+                createForm.resetFields();
+                fetchUsers(1);
+                setPage(1);
+            } catch (err) {
+                message.error(err.message);
+            } finally {
+                setCreating(false);
+            }
+        };
+
+        const columns = [
+            { title: "Email", dataIndex: "email", key: "email", ellipsis: true },
+            {
+                title: "Role", dataIndex: "role", key: "role", width: 120,
+                render: (role) => (
+                    <Tag className={"role-tag-" + role} color={role === "admin" ? "red" : "green"}>{role}</Tag>
+                ),
+            },
+            {
+                title: "Created", dataIndex: "created_at", key: "created_at", width: 170,
+                render: (v) => dayjs(v).format("YYYY-MM-DD HH:mm"),
+            },
+            {
+                title: "Actions", key: "actions", width: 250,
+                render: (_, record) => (
+                    <Space>
+                        <Select
+                            size="small"
+                            value={record.role}
+                            style={{ width: 100 }}
+                            onChange={(val) => handleRoleChange(record.id, val)}
+                            loading={roleChanging === record.id}
+                        >
+                            <Select.Option value="user">user</Select.Option>
+                            <Select.Option value="admin">admin</Select.Option>
+                        </Select>
+                        <Popconfirm
+                            title="Delete this user?"
+                            description={"Delete " + record.email + "?"}
+                            onConfirm={() => handleDelete(record.id)}
+                            okText="Delete"
+                            okButtonProps={{ danger: true }}
+                        >
+                            <Button size="small" danger loading={deleting === record.id}>Delete</Button>
+                        </Popconfirm>
+                    </Space>
+                ),
+            },
+        ];
+
+        return (
+            <>
+                <Card
+                    title={<span style={{ fontSize: 16, fontWeight: 600 }}>Users</span>}
+                    extra={<Button type="primary" onClick={() => setCreateOpen(true)} icon={<span>+</span>} style={{ borderRadius: 6 }}>Create User</Button>}
+                    style={{ marginTop: 16, borderRadius: 10 }}
+                >
+                    <Table
+                        dataSource={users}
+                        columns={columns}
+                        rowKey="id"
+                        loading={loading}
+                        pagination={{
+                            current: page,
+                            pageSize,
+                            total,
+                            onChange: setPage,
+                            showTotal: (t) => t + " users",
+                        }}
+                        size="middle"
+                    />
+                </Card>
+                <Modal
+                    title="Create User"
+                    open={createOpen}
+                    onCancel={() => { setCreateOpen(false); createForm.resetFields(); }}
+                    footer={null}
+                    destroyOnClose
+                >
+                    <Form form={createForm} layout="vertical" onFinish={handleCreate} autoComplete="off">
+                        <Form.Item label="Email" name="email" rules={[{ required: true, message: "Enter email" }]}>
+                            <Input placeholder="user@example.com"/>
+                        </Form.Item>
+                        <Form.Item label="Password" name="password" rules={[{ required: true, message: "Enter password" }, { min: 6, message: "At least 6 characters" }]}>
+                            <Input.Password/>
+                        </Form.Item>
+                        <Form.Item label="Role" name="role" initialValue="user">
+                            <Select>
+                                <Select.Option value="user">user</Select.Option>
+                                <Select.Option value="admin">admin</Select.Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item>
+                            <Button type="primary" htmlType="submit" block loading={creating} style={{ borderRadius: 6 }}>Create</Button>
+                        </Form.Item>
+                    </Form>
+                </Modal>
+            </>
+        );
+    }
+
+    function MyProfile() {
+        const [profile, setProfile] = useState(null);
+        const [loading, setLoading] = useState(true);
+        useEffect(() => {
+            api("/api/me").then((data) => {
+                setProfile(data.user);
+                localStorage.setItem(userKey, JSON.stringify(data.user));
+            }).catch((err) => {
+                message.error(err.message);
+            }).finally(() => setLoading(false));
+        }, []);
+        if (loading) return <Spin style={{ display: "block", marginTop: 80 }}/>;
+        if (!profile) return <Result status="error" title="Failed to load profile"/>;
+        return (
+            <Card title={<span style={{ fontSize: 16, fontWeight: 600 }}>My Profile</span>} style={{ marginTop: 16, borderRadius: 10 }}>
+                <Descriptions column={1} bordered size="middle">
+                    <Descriptions.Item label="ID"><Typography.Text copyable style={{ fontSize: 13 }}>{profile.id}</Typography.Text></Descriptions.Item>
+                    <Descriptions.Item label="Email">{profile.email}</Descriptions.Item>
+                    <Descriptions.Item label="Role">
+                        <Tag className={"role-tag-" + profile.role} color={profile.role === "admin" ? "red" : "green"}>{profile.role}</Tag>
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Created">{dayjs(profile.created_at).format("YYYY-MM-DD HH:mm:ss")}</Descriptions.Item>
+                </Descriptions>
+            </Card>
+        );
+    }
+
+    function App() {
+        const [session, setSession] = useState(() => {
+            const token = getStoredToken();
+            const user = getStoredUser();
+            return token && user ? { token, user } : null;
+        });
+        const [activeKey, setActiveKey] = useState("users");
+
+        const handleLogin = (data) => {
+            setSession({ token: data.accessToken, user: data.user });
+            setActiveKey("users");
+        };
+
+        const handleLogout = () => {
+            localStorage.removeItem(tokenKey);
+            localStorage.removeItem(userKey);
+            setSession(null);
+        };
+
+        if (!session) return <LoginForm onLogin={handleLogin}/>;
+
+        const isAdmin = session.user.role === "admin";
+        const initials = session.user.email.charAt(0).toUpperCase();
+
+        return (
+            <>
+                <div className="topbar">
+                    <div className="logo">Transact<span>o</span></div>
+                    <div className="user-info">
+                        <Avatar size={32} style={{ backgroundColor: "#0057b3", verticalAlign: "middle" }}>{initials}</Avatar>
+                        <span>{session.user.email}</span>
+                        <Tag className={"role-tag-" + session.user.role} color={session.user.role === "admin" ? "red" : "green"}>{session.user.role}</Tag>
+                        <Button size="small" onClick={handleLogout} style={{ borderRadius: 6 }}>Logout</Button>
+                    </div>
+                </div>
+                <div className="content-wrap">
+                    <Tabs activeKey={activeKey} onChange={setActiveKey} style={{ marginTop: -8 }}>
+                        {isAdmin && (
+                            <Tabs.TabPane tab="Users" key="users">
+                                <UserList onError={(err) => { if (err.message.includes("Admin")) handleLogout(); }}/>
+                            </Tabs.TabPane>
+                        )}
+                        <Tabs.TabPane tab="My Profile" key="profile">
+                            <MyProfile/>
+                        </Tabs.TabPane>
+                    </Tabs>
+                </div>
+            </>
+        );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>

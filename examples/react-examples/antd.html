@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React with Ant Design - Full-Screen Tabs</title>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/antd/5.10.0/reset.min.css" rel="stylesheet">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/antd/5.26.5/antd.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+    <script type="text/babel" src="components/Context.js"></script>
+    <script type="text/babel" src="components/Counter.js"></script>
+    <script type="text/babel" src="components/D3Chart.js"></script>
+    <script type="text/babel" src="components/ForceDirectedGraph.js"></script>
+    <script type="text/babel" src="components/SOM.js"></script>
+
+    <style>
+        body { padding: 30px }
+    </style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+</script>
+
+<script type="text/babel">
+    const { Tabs } = antd;
+    function App()
+    {
+        const [appContext, setAppContext] = React.useState(
+            {activeTabKey: "5"}
+        );
+        return (
+            <div>
+                <AppContext.Provider value={{ appContext, setAppContext }}>
+                    <Tabs
+                        activeKey={appContext.activeTabKey}
+                        onChange={(key) => {
+                            setAppContext( { ...appContext, activeTabKey: key } );
+                        }}
+                    >
+                        <Tabs.TabPane tab="Expandable Table" key="1">
+                            <div>Hello</div>
+                        </Tabs.TabPane>
+                        <Tabs.TabPane tab="Counter" key="2">
+                            <Counter/>
+                        </Tabs.TabPane>
+                        <Tabs.TabPane tab="D3Chart" key="3">
+                            <D3Chart/>
+                        </Tabs.TabPane>
+                        <Tabs.TabPane tab="ForceDirectedGraph" key="4">
+                            <ForceDirectedGraph/>
+                        </Tabs.TabPane>
+                        <Tabs.TabPane tab="SOM" key="5">
+                            <SOM/>
+                        </Tabs.TabPane>
+                    </Tabs>
+                </AppContext.Provider>
+            </div>
+        );
+    }
+    const { createRoot } = ReactDOM;
+    const root = createRoot(document.getElementById('root'));
+    root.render(<App />);
+</script>
+</body>
+</html>
