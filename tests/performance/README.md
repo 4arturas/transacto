@@ -28,6 +28,8 @@ sudo apt install k6
 | **Stress** | `transaction-api-stress.js` | Ramp to 300 VUs — find breaking point |
 | **Smoke** | `user-service-smoke.js` | 1 VU, 1 iteration — verify user-api-service |
 | **Load** | `user-service-load.js` | Ramp to 50 VUs over 2 min — expected traffic |
+| **Smoke** | `jwt-api-smoke.js` | 1 VU, 1 iteration — verify jwt-api-service |
+| **Load** | `jwt-api-load.js` | Ramp to 50 VUs over 2 min — expected traffic |
 
 ## Run
 
@@ -50,8 +52,15 @@ k6 run .\\tests\\performance\\user-service-smoke.js
 k6 run .\\tests\\performance\\user-service-load.js
 ```
 
+### JWT API Service (port 3000)
+
+```sh
+k6 run .\\tests\\performance\\jwt-api-smoke.js
+k6 run .\\tests\\performance\\jwt-api-load.js
+```
+
 ## Options
 
 | Env var | Default | Description |
 |---------|---------|-------------|
-| `API_BASE` | `http://localhost:1880` or `http://localhost:3100` | Target base URL |
+| `API_BASE` | `http://localhost:1880`, `http://localhost:3100`, or `http://localhost:3000` | Target base URL |
