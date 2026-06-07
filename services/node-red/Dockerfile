@@ -15,7 +15,8 @@ USER node-red
 
 COPY services/node-red/node-red-flows.json /default-flows.json
 COPY services/node-red/entrypoint.sh /custom-entrypoint.sh
+COPY services/node-red/deploy-flows.js /deploy-flows.js
 USER root
-RUN chmod +x /custom-entrypoint.sh && chown node-red:node-red /custom-entrypoint.sh
+RUN chmod +x /custom-entrypoint.sh && chown node-red:node-red /custom-entrypoint.sh /deploy-flows.js
 USER node-red
 ENTRYPOINT ["/custom-entrypoint.sh"]

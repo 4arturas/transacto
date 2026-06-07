@@ -27,4 +27,4 @@ I have been given the task to create `transaction-api-service`, which does not e
 
 The Node-RED diagrams need to be easy to understand.
 
-*Maybe you can suggest alternative visual programming tools — besides Node-RED — that would help architects and developers communicate better.*
+Presentation should run around that I joined the company Transacto, which already has some services, I am given to design new transaction api. Use simple English. I am not a native english speaker.
