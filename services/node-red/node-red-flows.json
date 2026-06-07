@@ -357,7 +357,7 @@
     "id": "g-transacto-kafka-producer",
     "type": "group",
     "z": "c203cc42e86554dd",
-    "name": "Manual Txn Inject",
+    "name": "Mimic data-stream-service",
     "style": {
       "label": true
     },
@@ -680,8 +680,8 @@
     "type": "comment",
     "z": "c203cc42e86554dd",
     "g": "g-transacto-kafka-producer",
-    "name": "Manual Txn",
-    "info": "Sends a random TRANSACTION_POSTED to raw-transactions immediately. Use when you don't want to wait 10 min for the automated data-stream-service.",
+    "name": "Mimic data-stream-service",
+    "info": "Sends a random TRANSACTION_POSTED to raw-transactions immediately, mimicking what data-stream-service does every 10 min.",
     "x": 430,
     "y": 740,
     "wires": []
