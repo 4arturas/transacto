@@ -537,7 +537,7 @@
     "tosidebar": true,
     "console": false,
     "tostatus": false,
-    "complete": "payload",
+    "complete": "payload[0].count",
     "targetType": "msg",
     "statusVal": "",
     "statusType": "auto",
