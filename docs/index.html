@@ -7,17 +7,35 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
 <style>
-.slides h2 { color: #2c3e50; }
-.slides h3 { color: #34495e; }
-.slides li { font-size: 0.85em; }
-.slides .comparison { display: flex; gap: 2em; justify-content: center; }
-.slides .comparison > div { flex: 1; padding: 1em; border-radius: 0.5em; }
-.slides .bad { background: #fde8e8; }
-.slides .good { background: #e8fde8; }
-.slides table { font-size: 0.75em; }
-.slides .screenshot { max-height: 420px; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap');
+body { font-family: 'Inter', sans-serif; }
+.reveal { background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f0 100%); }
+.reveal .slides { text-align: left; }
+.slides h2 { color: #1a2332; font-size: 1.6em; font-weight: 600; letter-spacing: -0.02em; }
+.slides h3 { color: #2c3e50; font-size: 1.2em; font-weight: 500; }
+.slides h4 { color: #34495e; font-size: 1em; font-weight: 600; }
+.slides p, .slides li { font-size: 0.75em; line-height: 1.6; color: #3a4556; }
+.slides li { margin: 0.3em 0; }
+.slides ol, .slides ul { padding-left: 1.2em; }
+.slides blockquote { border-left: 4px solid #4a90d9; padding-left: 1em; margin-left: 0; background: rgba(74,144,217,0.06); padding: 0.8em 1em; border-radius: 0 8px 8px 0; font-style: italic; }
+.slides .comparison { display: flex; gap: 1.5em; justify-content: center; margin-top: 1em; }
+.slides .comparison > div { flex: 1; padding: 1em 1.2em; border-radius: 10px; }
+.slides .bad { background: #fde8e8; border: 1px solid #f5c6c6; }
+.slides .good { background: #e6f7e6; border: 1px solid #b8e6b8; }
+.slides table { font-size: 0.7em; width: 100%; border-collapse: collapse; }
+.slides td, .slides th { padding: 0.5em 0.8em; border-bottom: 1px solid #d0d7de; }
+.slides th { font-weight: 600; color: #1a2332; background: #f0f3f8; }
+.slides code { background: #f0f3f8; padding: 0.15em 0.4em; border-radius: 4px; font-size: 0.85em; }
+.slides pre code { background: #1a2332; color: #e4e9f0; padding: 1em; border-radius: 8px; }
+.slides .screenshot { max-height: 340px; border: 1px solid #d0d7de; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); cursor: zoom-in; transition: transform 0.2s; }
+.slides .screenshot:hover { transform: scale(1.02); box-shadow: 0 6px 24px rgba(0,0,0,0.12); }
 .slides .tight p { margin: 0.3em 0; }
-.reveal .code { font-size: 0.6em; }
+.reveal .code { font-size: 0.55em; }
+.slides .fragment { opacity: 0.85; }
+/* lightbox */
+#lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9999; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+#lightbox img { max-width: 90vw; max-height: 90vh; border-radius: 8px; box-shadow: 0 8px 48px rgba(0,0,0,0.5); }
+#lightbox.show { display: flex; }
 </style>
 </head>
 <body>
@@ -25,11 +43,11 @@
 <div class="slides">
 
 <!-- Title -->
-<section>
-<h1>How I Think About Architecture</h1>
-<h3 style="color:#7f8c8d;">Working Prototypes, Not Static Diagrams</h3>
-<p style="margin-top:2em;">Node-RED · Hurl · k6 · Docker</p>
-<p>Build a running prototype first — executable tests from day one</p>
+<section data-background="linear-gradient(135deg, #1a2332 0%, #2c3e50 100%)">
+<h1 style="color:#fff; font-size:2.2em;">How I Think About Architecture</h1>
+<h3 style="color:#a0b4c8;">Working Prototypes, Not Static Diagrams</h3>
+<p style="margin-top:2em; color:#7f8c8d;">Node-RED · Hurl · k6 · Docker</p>
+<p style="color:#5a7a9a;">Build a running prototype first — executable tests from day one</p>
 </section>
 
 <!-- The Problem -->
@@ -44,13 +62,13 @@
 <li>Implementation is wrong</li>
 <li>Rework</li>
 </ol>
-<p class="fragment" style="font-size:1.4em; font-weight:bold; margin-top:1em;">I work differently.</p>
+<p class="fragment" style="font-size:1.2em; font-weight:bold; margin-top:1.2em; color:#c0392b;">I work differently.</p>
 </section>
 
 <!-- My Approach -->
 <section>
 <h2>My Approach</h2>
-<blockquote style="font-size:1.2em; margin-bottom:1em;">Build a working prototype first. Then hand it over.</blockquote>
+<blockquote>Build a working prototype first. Then hand it over.</blockquote>
 <div class="comparison">
 <div class="bad">
 <h4>Traditional</h4>
@@ -77,13 +95,13 @@
 <section>
 <h2>A Practical Example</h2>
 <p>Let's imagine a company called <strong>Transacto</strong>.</p>
-<p style="margin-top:1em;">Existing services:</p>
+<p style="margin-top:0.8em;">Existing services:</p>
 <ul>
 <li><strong>data-stream-service</strong> — sends banking events to Kafka</li>
 <li><strong>jwt-api-service</strong> — user login and tokens</li>
 <li><strong>transaction-processor-service</strong> — reads events, saves to database</li>
 </ul>
-<p style="margin-top:1em;">They ask me: <em>"Design a new REST API for transactions and accounts."</em></p>
+<p style="margin-top:0.8em;">They ask me: <em>"Design a new REST API for transactions and accounts."</em></p>
 <p>This is how I did it.</p>
 </section>
 
@@ -91,11 +109,11 @@
 <section>
 <section>
 <h2>System Overview</h2>
-<img src="diagrams/system-overview.png" style="max-height:500px;">
+<img src="diagrams/system-overview.png" class="screenshot" style="max-height:460px;">
 </section>
 <section>
 <h2>Security Overview</h2>
-<img src="diagrams/security-overview.png" style="max-height:500px;">
+<img src="diagrams/security-overview.png" class="screenshot" style="max-height:460px;">
 </section>
 </section>
 
@@ -115,7 +133,7 @@
 <section>
 <h2>Step 1: Build a Prototype in Node-RED</h2>
 <p>Instead of drawing diagrams, I opened Node-RED and built the API.</p>
-<div style="display:flex; gap:2em; margin-top:1em;">
+<div style="display:flex; gap:1.5em; margin-top:0.8em;">
 <div style="flex:1;">
 <p><strong>A running prototype is better because:</strong></p>
 <ul>
@@ -136,12 +154,12 @@
 <section>
 <h2>Transacto Dashboard</h2>
 <p>The main view. Shows all services and their health status.</p>
-<img src="screenshots/Transacto.png" class="screenshot">
+<img src="screenshots/Transacto.png" class="screenshot" style="max-height:400px;">
 </section>
 <section>
 <h2>JWT Auth API</h2>
 <p>Login, register, refresh tokens. Every call needs a valid token.</p>
-<img src="screenshots/JWT_Auth_API.png" class="screenshot">
+<img src="screenshots/JWT_Auth_API.png" class="screenshot" style="max-height:400px;">
 </section>
 </section>
 
@@ -150,7 +168,7 @@
 <section>
 <h2>User Service</h2>
 <p>Create, read, update, delete users. Admins have more rights.</p>
-<img src="screenshots/User_Service.png" class="screenshot">
+<img src="screenshots/User_Service.png" class="screenshot" style="max-height:400px;">
 </section>
 <section>
 <h2>Transaction API Prototype</h2>
@@ -163,7 +181,7 @@
 <li><code>GET /api/accounts</code></li>
 <li><code>GET /api/accounts/:id</code></li>
 </ul>
-<img src="screenshots/Transaction_API_Prototype.png" class="screenshot">
+<img src="screenshots/Transaction_API_Prototype.png" class="screenshot" style="max-height:320px;">
 </section>
 </section>
 
@@ -177,22 +195,35 @@
 <li><strong>Load</strong> — 50 users, normal traffic</li>
 <li><strong>Stress</strong> — 300 users, find the limit</li>
 </ul>
-<img src="screenshots/Performance_Tests.png" class="screenshot">
+<img src="screenshots/Performance_Tests.png" class="screenshot" style="max-height:340px;">
 </section>
 <section>
 <h2>Regression Tests</h2>
 <p>Executable tests with Hurl. Same tests check both the prototype and the real implementation.</p>
-<img src="screenshots/Regression_Tests.png" class="screenshot">
+<img src="screenshots/Regression_Tests.png" class="screenshot" style="max-height:400px;">
 </section>
 </section>
 
-<!-- Canary Monitoring -->
+<!-- Prototype → Implementation Evolution -->
 <section>
 <section>
-<h2>Canary Monitoring</h2>
-<p>Node-RED mimics <strong>AWS Canary</strong> — checking if systems are healthy.</p>
-<img src="screenshots/Canary_Monitoring.png" class="screenshot">
-<p>Every 60s checks all services. If one is down, sends alert (mock email + SMS). 5-minute cooldown.</p>
+<h2>Prototype → Implementation</h2>
+<p>The prototype started in <strong>Node-RED</strong>, then evolved through three implementations:</p>
+<div style="display:flex; gap:1.2em; margin-top:0.8em;">
+<div style="flex:1; background:#fef9e8; padding:0.8em 1em; border-radius:10px; border:1px solid #f5e6b8;">
+<h4>Node-RED</h4>
+<p style="font-size:0.7em; line-height:1.5;">Hours to build. Perfect for exploring the API surface and getting stakeholder feedback.</p>
+</div>
+<div style="flex:1; background:#e8f0fe; padding:0.8em 1em; border-radius:10px; border:1px solid #b8d0f5;">
+<h4>TypeScript (Express)</h4>
+<p style="font-size:0.7em; line-height:1.5;">Production-ready. Same Hurl tests validate both the prototype and the real service.</p>
+</div>
+<div style="flex:1; background:#e6f7e6; padding:0.8em 1em; border-radius:10px; border:1px solid #b8e6b8;">
+<h4>Java (Spring Boot)</h4>
+<p style="font-size:0.7em; line-height:1.5;">Same API, same tests, different stack. Ported from git history with zero ambiguity.</p>
+</div>
+</div>
+<p style="margin-top:0.8em; text-align:center;">All three run the same Hurl regression tests. <strong>34 requests, 0 failures.</strong></p>
 </section>
 </section>
 
@@ -233,7 +264,7 @@
 <li class="fragment"><strong>Makes things clear</strong> — running code is better than a PDF</li>
 <li class="fragment"><strong>Has a "change mindset"</strong> — always looking for better ways</li>
 </ul>
-<p class="fragment" style="margin-top:1.5em; font-style:italic;">This project shows exactly that.</p>
+<p class="fragment" style="margin-top:1.2em; font-style:italic; text-align:center;">This project shows exactly that.</p>
 </section>
 
 <!-- Try It Yourself -->
@@ -245,10 +276,10 @@ git clone https://github.com/4arturas/transacto.git
 cd transacto
 docker compose up --build
 </code></pre>
-<table style="margin-top:1em;">
+<table style="margin-top:0.8em;">
 <thead><tr><th>Web UI</th><th>Address</th></tr></thead>
 <tbody>
-<tr><td>Transaction dashboard</td><td><code>http://localhost:4000</code></td></tr>
+<tr><td>Transaction dashboard (Java)</td><td><code>http://localhost:4000</code></td></tr>
 <tr><td>Admin panel</td><td><code>http://localhost:3100</code></td></tr>
 <tr><td>Node-RED editor</td><td><code>http://localhost:1880</code></td></tr>
 <tr><td>JWT Auth API</td><td><code>http://localhost:3000</code></td></tr>
@@ -264,12 +295,12 @@ docker compose up --build
 <tr><td>Regular user</td><td><code>alice@example.com</code></td><td><code>secret123</code></td></tr>
 </tbody>
 </table>
-<h3 style="margin-top:1.5em;">Run the tests</h3>
+<h3 style="margin-top:1.2em;">Run the tests</h3>
 <pre><code class="language-bash" data-trim>
-# Functional (Hurl)
-hurl --test --file-root . tests/regression/user-service-tests/run-all.hurl
-hurl --test --file-root . tests/regression/jwt-api-service-tests/run-all.hurl
-hurl --test --file-root . tests/regression/transaction-api-service-tests/run-all.hurl
+# Functional (Hurl) — same tests validate both prototype and real implementation
+hurl --test --no-cookie-store --variable base_url=http://localhost:3000 tests/regression/jwt-api-service-tests/run-all.hurl
+hurl --test --no-cookie-store --variable base_url=http://localhost:3100 tests/regression/user-service-tests/run-all.hurl
+hurl --test --no-cookie-store --variable base_url=http://localhost:4000 --variable auth_url=http://localhost:3000/api/auth/login --variable auth_base=http://localhost:3000 tests/regression/transaction-api-service-tests/run-all.hurl
 
 # Performance (k6)
 k6 run tests/performance/user-service-load.js
@@ -280,15 +311,18 @@ k6 run tests/performance/transaction-api-load.js
 </section>
 
 <!-- Thank You -->
-<section>
-<h1>Thank You</h1>
-<p style="margin-top:1em;">Repository: <a href="https://github.com/4arturas/transacto">github.com/4arturas/transacto</a></p>
-<p style="color:#7f8c8d; margin-top:0.5em;">Spring Boot 4.0.6 · Java 25 · Node-RED · Kafka · PostgreSQL · Docker</p>
-<p style="margin-top:2em; font-size:1.4em;">Questions?</p>
+<section data-background="linear-gradient(135deg, #1a2332 0%, #2c3e50 100%)">
+<h1 style="color:#fff;">Thank You</h1>
+<p style="margin-top:1em; color:#a0b4c8;">Repository: <a href="https://github.com/4arturas/transacto" style="color:#6a9fd8;">github.com/4arturas/transacto</a></p>
+<p style="color:#5a7a9a; margin-top:0.5em;">Spring Boot 4.0.6 · Java 25 · Node-RED · Kafka · PostgreSQL · Docker</p>
+<p style="margin-top:2em; font-size:1.2em; color:#7f8c8d;">Questions?</p>
 </section>
 
 </div>
 </div>
+
+<div id="lightbox"><img src="" alt=""></div>
+
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
 <script>
@@ -300,6 +334,20 @@ Reveal.initialize({
   hash: true,
   transition: 'slide',
   backgroundTransition: 'fade'
+});
+
+document.querySelectorAll('.slides .screenshot').forEach(img => {
+  img.addEventListener('click', () => {
+    const lb = document.getElementById('lightbox');
+    lb.querySelector('img').src = img.src;
+    lb.classList.add('show');
+  });
+});
+document.getElementById('lightbox').addEventListener('click', function() {
+  this.classList.remove('show');
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.getElementById('lightbox').classList.remove('show');
 });
 </script>
 </body>
