@@ -55,6 +55,46 @@
     "info": "Canary monitoring that checks all service health endpoints every 60 seconds. On transition to DOWN, sends mock email and SMS alerts with a 5-minute cooldown via the Trigger node."
   },
   {
+    "id": "tab-login-alice",
+    "type": "tab",
+    "label": "Login Alice",
+    "disabled": false,
+    "info": ""
+  },
+  {
+    "id": "1828a15ff536f9d7",
+    "type": "subflow",
+    "name": "Login",
+    "info": "",
+    "category": "",
+    "in": [
+      {
+        "x": 560,
+        "y": 280,
+        "wires": [
+          {
+            "id": "090763c9e0e89de5"
+          }
+        ]
+      }
+    ],
+    "out": [
+      {
+        "x": 1240,
+        "y": 280,
+        "wires": [
+          {
+            "id": "9b1c59eb9f8c12bf",
+            "port": 0
+          }
+        ]
+      }
+    ],
+    "env": [],
+    "meta": {},
+    "color": "#DDAA99"
+  },
+  {
     "id": "g-canary",
     "type": "group",
     "z": "tab-canary",
@@ -429,6 +469,26 @@
     "h": 162
   },
   {
+    "id": "g-login-alice",
+    "type": "group",
+    "z": "tab-login-alice",
+    "style": {
+      "label": true
+    },
+    "nodes": [
+      "inject-alice-login",
+      "debug-alice-login",
+      "change-alice-extract-token",
+      "http-alice-stats",
+      "debug-alice-stats",
+      "1aae98e3283e6f0e"
+    ],
+    "x": 74,
+    "y": 159,
+    "w": 1032,
+    "h": 322
+  },
+  {
     "id": "040e76c320c91e83",
     "type": "oriolrius-kafka-broker",
     "g": "a8da39c65ad31a9f",
@@ -475,7 +535,8 @@
     "env": [],
     "modules": {
       "@oriolrius/node-red-contrib-kafka": "6.1.1",
-      "node-red-contrib-postgresql": "0.15.4"
+      "node-red-contrib-postgresql": "0.15.4",
+      "@5minds/node-red-openapi-generator": "7.10.0"
     }
   },
   {
@@ -604,6 +665,44 @@
     },
     "requestBody": null,
     "deprecated": false
+  },
+  {
+    "id": "090763c9e0e89de5",
+    "type": "change",
+    "z": "1828a15ff536f9d7",
+    "name": "Set credentials",
+    "rules": [
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "{\"email\":\"alice@example.com\",\"password\":\"secret123\"}",
+        "tot": "json"
+      }
+    ],
+    "action": "",
+    "x": 740,
+    "y": 280,
+    "wires": [
+      [
+        "9b1c59eb9f8c12bf"
+      ]
+    ]
+  },
+  {
+    "id": "9b1c59eb9f8c12bf",
+    "type": "http request",
+    "z": "1828a15ff536f9d7",
+    "name": "POST /api/auth/login",
+    "method": "POST",
+    "ret": "obj",
+    "url": "http://jwt-api-service:3000/api/auth/login",
+    "tls": "",
+    "x": 1020,
+    "y": 280,
+    "wires": [
+      []
+    ]
   },
   {
     "id": "t-consumer-tp",
@@ -3620,5 +3719,121 @@
     "x": 1360,
     "y": 240,
     "wires": []
+  },
+  {
+    "id": "inject-alice-login",
+    "type": "inject",
+    "z": "tab-login-alice",
+    "g": "g-login-alice",
+    "name": "Login as Alice",
+    "props": [],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "x": 190,
+    "y": 200,
+    "wires": [
+      [
+        "1aae98e3283e6f0e"
+      ]
+    ]
+  },
+  {
+    "id": "change-alice-extract-token",
+    "type": "change",
+    "z": "tab-login-alice",
+    "g": "g-login-alice",
+    "name": "Extract token",
+    "rules": [
+      {
+        "t": "set",
+        "p": "headers",
+        "pt": "msg",
+        "to": "{\"Authorization\":\"Bearer \" & $flowContext(\"accessToken\")}",
+        "tot": "jsonata"
+      },
+      {
+        "t": "set",
+        "p": "accessToken",
+        "pt": "flow",
+        "to": "payload.accessToken",
+        "tot": "msg"
+      }
+    ],
+    "action": "",
+    "x": 550,
+    "y": 320,
+    "wires": [
+      [
+        "http-alice-stats"
+      ]
+    ]
+  },
+  {
+    "id": "http-alice-stats",
+    "type": "http request",
+    "z": "tab-login-alice",
+    "g": "g-login-alice",
+    "name": "GET /api/stats",
+    "method": "GET",
+    "ret": "obj",
+    "url": "http://transaction-api-service:4000/api/stats",
+    "tls": "",
+    "x": 680,
+    "y": 380,
+    "wires": [
+      [
+        "debug-alice-stats"
+      ]
+    ]
+  },
+  {
+    "id": "debug-alice-stats",
+    "type": "debug",
+    "z": "tab-login-alice",
+    "g": "g-login-alice",
+    "name": "Stats result",
+    "active": true,
+    "tosidebar": true,
+    "console": true,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "x": 820,
+    "y": 440,
+    "wires": []
+  },
+  {
+    "id": "debug-alice-login",
+    "type": "debug",
+    "z": "tab-login-alice",
+    "g": "g-login-alice",
+    "name": "Login result",
+    "active": true,
+    "tosidebar": true,
+    "console": true,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "x": 980,
+    "y": 220,
+    "wires": []
+  },
+  {
+    "id": "1aae98e3283e6f0e",
+    "type": "subflow:1828a15ff536f9d7",
+    "z": "tab-login-alice",
+    "g": "g-login-alice",
+    "name": "",
+    "x": 430,
+    "y": 280,
+    "wires": [
+      [
+        "debug-alice-login",
+        "change-alice-extract-token"
+      ]
+    ]
   }
 ]
