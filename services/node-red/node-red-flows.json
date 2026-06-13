@@ -57,7 +57,7 @@
   {
     "id": "tab-login-alice",
     "type": "tab",
-    "label": "Login Alice",
+    "label": "Login Alice & Fetch Stats",
     "disabled": false,
     "info": ""
   },
@@ -467,26 +467,6 @@
     "y": 19,
     "w": 652,
     "h": 162
-  },
-  {
-    "id": "g-login-alice",
-    "type": "group",
-    "z": "tab-login-alice",
-    "style": {
-      "label": true
-    },
-    "nodes": [
-      "inject-alice-login",
-      "debug-alice-login",
-      "change-alice-extract-token",
-      "http-alice-stats",
-      "debug-alice-stats",
-      "1aae98e3283e6f0e"
-    ],
-    "x": 74,
-    "y": 159,
-    "w": 1032,
-    "h": 322
   },
   {
     "id": "040e76c320c91e83",
@@ -3724,7 +3704,6 @@
     "id": "inject-alice-login",
     "type": "inject",
     "z": "tab-login-alice",
-    "g": "g-login-alice",
     "name": "Login as Alice",
     "props": [],
     "repeat": "",
@@ -3732,8 +3711,8 @@
     "once": false,
     "onceDelay": 0.1,
     "topic": "",
-    "x": 190,
-    "y": 200,
+    "x": 170,
+    "y": 80,
     "wires": [
       [
         "1aae98e3283e6f0e"
@@ -3744,7 +3723,6 @@
     "id": "change-alice-extract-token",
     "type": "change",
     "z": "tab-login-alice",
-    "g": "g-login-alice",
     "name": "Extract token",
     "rules": [
       {
@@ -3763,8 +3741,8 @@
       }
     ],
     "action": "",
-    "x": 550,
-    "y": 320,
+    "x": 330,
+    "y": 200,
     "wires": [
       [
         "http-alice-stats"
@@ -3775,14 +3753,13 @@
     "id": "http-alice-stats",
     "type": "http request",
     "z": "tab-login-alice",
-    "g": "g-login-alice",
     "name": "GET /api/stats",
     "method": "GET",
     "ret": "obj",
     "url": "http://transaction-api-service:4000/api/stats",
     "tls": "",
-    "x": 680,
-    "y": 380,
+    "x": 460,
+    "y": 260,
     "wires": [
       [
         "debug-alice-stats"
@@ -3793,7 +3770,6 @@
     "id": "debug-alice-stats",
     "type": "debug",
     "z": "tab-login-alice",
-    "g": "g-login-alice",
     "name": "Stats result",
     "active": true,
     "tosidebar": true,
@@ -3801,37 +3777,19 @@
     "tostatus": false,
     "complete": "payload",
     "targetType": "msg",
-    "x": 820,
-    "y": 440,
-    "wires": []
-  },
-  {
-    "id": "debug-alice-login",
-    "type": "debug",
-    "z": "tab-login-alice",
-    "g": "g-login-alice",
-    "name": "Login result",
-    "active": true,
-    "tosidebar": true,
-    "console": true,
-    "tostatus": false,
-    "complete": "payload",
-    "targetType": "msg",
-    "x": 980,
-    "y": 220,
+    "x": 580,
+    "y": 320,
     "wires": []
   },
   {
     "id": "1aae98e3283e6f0e",
     "type": "subflow:1828a15ff536f9d7",
     "z": "tab-login-alice",
-    "g": "g-login-alice",
     "name": "",
-    "x": 430,
-    "y": 280,
+    "x": 250,
+    "y": 140,
     "wires": [
       [
-        "debug-alice-login",
         "change-alice-extract-token"
       ]
     ]
