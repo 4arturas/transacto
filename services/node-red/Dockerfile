@@ -1,6 +1,6 @@
 FROM nodered/node-red:latest
 
-RUN npm install @oriolrius/node-red-contrib-kafka node-red-contrib-postgresql
+RUN npm install @oriolrius/node-red-contrib-kafka node-red-contrib-postgresql @5minds/node-red-openapi-generator
 
 USER root
 RUN apk add --no-cache ca-certificates && \
