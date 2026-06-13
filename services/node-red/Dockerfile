@@ -14,6 +14,7 @@ RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/reposi
 USER node-red
 
 COPY services/node-red/node-red-flows.json /default-flows.json
+COPY services/node-red/settings.js /default-settings.js
 COPY services/node-red/entrypoint.sh /custom-entrypoint.sh
 COPY services/node-red/deploy-flows.js /deploy-flows.js
 USER root
