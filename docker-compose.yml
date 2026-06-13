@@ -115,15 +115,28 @@ services:
       txn-db:
         condition: service_healthy
 
-  # ── Transaction API Service ─────────────────────────────────────
+  # ── Transaction API Service (Java / Spring Boot) ───────────────
   transaction-api-service:
     build:
-      context: ./services/transaction-api-service
+      context: ./services/transaction-api-service-java
       dockerfile: Dockerfile
     container_name: transaction-api-service
     restart: unless-stopped
     ports:
       - "4000:4000"
+    depends_on:
+      txn-db:
+        condition: service_healthy
+
+  # ── Transaction API Service (Node.js, kept for comparison) ────
+  transaction-api-service-node:
+    build:
+      context: ./services/transaction-api-service
+      dockerfile: Dockerfile
+    container_name: transaction-api-service-node
+    restart: unless-stopped
+    ports:
+      - "4001:4000"
     environment:
       PORT: 4000
       DATABASE_URL: postgres://postgres:postgres@txn-db:5432/transaction_processor
